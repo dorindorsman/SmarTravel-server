@@ -1,30 +1,33 @@
 package smarTravel.instances;
 
 import java.util.Date;
+import java.util.Map;
+
+import smarTravel.DomainWithId;
 
 public class InstanceBoundary {
-	private InstanceId instanceId;
+	private DomainWithId instanceId;
 	private String type;
 	private String name;
 	private boolean active;
 	private Date createdTimestamp;
 	private CreatedBy createdBy;
 	private Location location;
-	private InstanceAttributes instanceAttributes;
+	private Map<String, Object> instanceAttributes;
 	
 	public InstanceBoundary() {
-		
+		super();
 	}
 	
-	public InstanceBoundary(InstanceId instanceId) {
+	public InstanceBoundary(DomainWithId instanceId) {
 		this.instanceId = instanceId;
 	}
 
-	public InstanceId getInstanceId() {
+	public DomainWithId getInstanceId() {
 		return instanceId;
 	}
 
-	public void setInstanceId(InstanceId instanceId) {
+	public void setInstanceId(DomainWithId instanceId) {
 		this.instanceId = instanceId;
 	}
 
@@ -76,11 +79,11 @@ public class InstanceBoundary {
 		this.location = location;
 	}
 
-	public InstanceAttributes getInstanceAttributes() {
+	public Map<String, Object> getInstanceAttributes() {
 		return instanceAttributes;
 	}
 
-	public void setInstanceAttributes(InstanceAttributes instanceAttributes) {
+	public void setInstanceAttributes(Map<String, Object> instanceAttributes) {
 		this.instanceAttributes = instanceAttributes;
 	}
 

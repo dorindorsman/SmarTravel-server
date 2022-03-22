@@ -1,31 +1,31 @@
 package smarTravel.instances;
 
 public class Location {
-	private double lat;
-	private double lng;
+	private Double lat;
+	private Double lng;
 
 	public Location() {
 	};
 
-	public Location(double lat, double lng) {
+	public Location(Double lat, Double lng) {
 		super();
 		this.lat = lat;
 		this.lng = lng;
 	}
 
-	public double getLat() {
+	public Double getLat() {
 		return lat;
 	}
 
-	public void setLat(double lat) {
+	public void setLat(Double lat) {
 		this.lat = lat;
 	}
 
-	public double getLng() {
+	public Double getLng() {
 		return lng;
 	}
 
-	public void setLng(double lng) {
+	public void setLng(Double lng) {
 		this.lng = lng;
 	}
 

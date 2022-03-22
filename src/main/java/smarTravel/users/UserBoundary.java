@@ -1,8 +1,10 @@
 package smarTravel.users;
 
+import smarTravel.DomainWithEmail;
+
 public class UserBoundary {
 
-	private UserId userId;
+	private DomainWithEmail userId;
 	private String role;
 	private String username;
 	private String avatar;
@@ -10,15 +12,15 @@ public class UserBoundary {
 	public UserBoundary() {
 	}
 
-	public UserBoundary(UserId userId) {
+	public UserBoundary(DomainWithEmail userId) {
 		this.userId = userId;
 	}
 	
-	public UserId getUserId() {
+	public DomainWithEmail getUserId() {
 		return userId;
 	}
 
-	public void setUserId(UserId userId) {
+	public void setUserId(DomainWithEmail userId) {
 		this.userId = userId;
 	}
 

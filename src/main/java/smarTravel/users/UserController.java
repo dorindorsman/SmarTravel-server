@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import smarTravel.DomainWithEmail;
+
 @RestController
 public class UserController {
 
@@ -21,7 +23,7 @@ public class UserController {
 			@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail) {
 		
-		UserBoundary userBoundary = new UserBoundary(new UserId(userDomain, userEmail));
+		UserBoundary userBoundary = new UserBoundary(new DomainWithEmail(userDomain, userEmail));
 		userBoundary.setRole("test");
 		userBoundary.setUsername("dammy name");
 		userBoundary.setAvatar("uri");
