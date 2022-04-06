@@ -19,12 +19,9 @@ import smarTravel.DomainWithId;
 @RestController
 public class ActivityController {
 	
-	final String ACTIVITY_ADMIN_PATH = "/iob/admin/activities";
-	final String ACTIVITY_PATH = "/iob/activities";
-	
 	@RequestMapping(
 			method = RequestMethod.GET,
-			path = ACTIVITY_ADMIN_PATH,
+			path = "/iob/admin/activities",
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ActivityBoundary[] getAllActivities() {
 		
@@ -46,19 +43,19 @@ public class ActivityController {
 	
 	@RequestMapping(
 			method = RequestMethod.POST,
-			path = ACTIVITY_PATH,
+			path = "/iob/activities",
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 		public Object createActivity (@RequestBody ActivityBoundary boundary) {
 	
-			boundary.setActicityId(new DomainWithId(Domain.DOMAIN, UUID.randomUUID().toString()));
+			boundary.setActicityId(new DomainWithId("", UUID.randomUUID().toString()));
 			
 			return boundary;
 		}
 	
 	@RequestMapping(
 			method = RequestMethod.DELETE,
-			path = ACTIVITY_ADMIN_PATH)
+			path = "/iob/admin/activities")
 		public void deleteAllUsers () {
 			// delete activities from db here
 		}

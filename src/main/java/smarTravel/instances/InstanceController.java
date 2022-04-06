@@ -20,12 +20,9 @@ import smarTravel.DomainWithId;
 @RestController
 public class InstanceController {
 
-	final String INSTANCE_PATH = "/iob/instances";
-	final String INSTANCE_ADMIN_PATH = "/iob/admin/instances";
-
 	@RequestMapping(
 			method = RequestMethod.GET,
-			path = INSTANCE_PATH + "/{instanceDomain}/{instanceId}",
+			path = "/iob/instances/{instanceDomain}/{instanceId}",
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public InstanceBoundary retrieveInstance(
 			@PathVariable("instanceDomain") String instanceDomain,
@@ -46,7 +43,7 @@ public class InstanceController {
 	
 	@RequestMapping(
 			method = RequestMethod.GET,
-			path = INSTANCE_PATH,
+			path = "/iob/instances",
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public InstanceBoundary[] getAllInstances() {
 		
@@ -70,19 +67,19 @@ public class InstanceController {
 	
 	@RequestMapping(
 			method = RequestMethod.POST,
-			path = INSTANCE_PATH,
+			path = "/iob/instances",
 			produces = MediaType.APPLICATION_JSON_VALUE,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 		public InstanceBoundary createInstance (@RequestBody InstanceBoundary boundary) {
 			
-			boundary.setInstanceId(new DomainWithId(Domain.DOMAIN, UUID.randomUUID().toString()));
+			boundary.setInstanceId(new DomainWithId("", UUID.randomUUID().toString()));
 			
 			return boundary;
 		}
 	
 	@RequestMapping(
 			method = RequestMethod.PUT,
-			path = INSTANCE_PATH + "/{instanceDomain}/{instanceId}",
+			path = "/iob/instances/{instanceDomain}/{instanceId}",
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 		public void UpdateInstace (
 				@PathVariable("instanceDomain") String instanceDomain, 
@@ -93,7 +90,7 @@ public class InstanceController {
 	
 	@RequestMapping(
 			method = RequestMethod.DELETE,
-			path = INSTANCE_ADMIN_PATH)
+			path = "/iob/admin/instances")
 		public void deleteAllInstances () {
 			// delete instances from db here
 		}
