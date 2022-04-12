@@ -1,7 +1,4 @@
-package smarTravel.users;
-
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+package iob.restAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import iob.logic.UserServices;
-import smarTravel.Domain;
-import smarTravel.DomainWithEmail;
+import iob.utility.DomainWithEmail;
 
 @RestController
 public class UserController {
@@ -50,20 +46,6 @@ public class UserController {
 	public UserBoundary[] getAllUsers() {
 		
 		return this.userServices.getAllUsers().toArray(new UserBoundary[0]);
-		
-//		
-//		return Stream.of(new UserBoundary[] {
-//				new UserBoundary(new DomainWithEmail("domain", "email1")),
-//				new UserBoundary(new DomainWithEmail("domain", "email2")),
-//				new UserBoundary(new DomainWithEmail("domain", "email3"))}
-//			).map(userBoundary->{
-//				userBoundary.setRole("test");
-//				userBoundary.setUsername("dammy name");
-//				userBoundary.setAvatar("uri avatar");
-//				return userBoundary;
-//			})// Stream<UserBoundary>
-//			.collect(Collectors.toList())// List<UserBoundary>
-//			.toArray(new UserBoundary[0]);// UserBoundary[]
 	}
 	
 	@RequestMapping(

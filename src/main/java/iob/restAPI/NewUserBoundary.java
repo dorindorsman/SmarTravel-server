@@ -1,4 +1,4 @@
-package smarTravel.users;
+package iob.restAPI;
 
 public class NewUserBoundary {
 

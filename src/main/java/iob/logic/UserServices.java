@@ -1,9 +1,7 @@
 package iob.logic;
 
 import java.util.List;
-
-import smarTravel.users.NewUserBoundary;
-import smarTravel.users.UserBoundary;
+import iob.restAPI.UserBoundary;
 
 public interface UserServices {
 	public UserBoundary createUser(UserBoundary user);

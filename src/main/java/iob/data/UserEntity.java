@@ -1,22 +1,23 @@
 package iob.data;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 /*
 USERS_TABLE
 ---------------------------
-//USER_EMAIL    |USER_DOMAIN  | USER_ROLE | USER_NAME    | AVATAR       |
-//VARCHAR(255)  |VARCHAR(255) |INT        | VARCHAR(255) | VARCHAR(255) | 
+//USER_ID      | USER_ROLE    | USER_NAME    | AVATAR       |
+//VARCHAR(255) | VARCHAR(255) | VARCHAR(255) | VARCHAR(255) |
 <PK>		 
  */
 @Entity
 @Table(name="USERS")
 public class UserEntity  {
 	
-	private String userEmail;
-	private String userDomain;
+	private String userId;
 	private UserRole userRole;
 	private String username;
 	private String avatar;
@@ -25,22 +26,15 @@ public class UserEntity  {
 	}
 
 	@Id
-	public String getUserEmail() {
-		return userEmail;
+	public String getUserId() {
+		return userId;
 	}
 
-	public void setUserEmail(String userEmail) {
-		this.userEmail = userEmail;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
-
-	public String getUserDomain() {
-		return userDomain;
-	}
-
-	public void setUserDomain(String userDomain) {
-		this.userDomain = userDomain;
-	}
-
+	
+	@Enumerated(EnumType.STRING)
 	public UserRole getUserRole() {
 		return userRole;
 	}

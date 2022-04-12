@@ -1,6 +1,6 @@
-package smarTravel.users;
+package iob.restAPI;
 
-import smarTravel.DomainWithEmail;
+import iob.utility.DomainWithEmail;
 
 public class UserBoundary {
 

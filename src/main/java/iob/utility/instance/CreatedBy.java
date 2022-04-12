@@ -1,16 +1,13 @@
-package smarTravel.activities;
+package iob.utility.instance;
 
-import smarTravel.DomainWithEmail;
+import iob.utility.DomainWithEmail;
 
-public class InvokedBy {
-
+public class CreatedBy {
 	private DomainWithEmail userId;
 	
-	public InvokedBy() {
-		super();
-	}
+	public CreatedBy() {}
 
-	public InvokedBy(DomainWithEmail userId) {
+	public CreatedBy(DomainWithEmail userId) {
 		super();
 		this.userId = userId;
 	}
@@ -25,7 +22,7 @@ public class InvokedBy {
 
 	@Override
 	public String toString() {
-		return "InvokedBy [userId=" + userId + "]";
-	}
+		return "CreatedBy [userId=" + userId + "]";
+	};
 	
 }

@@ -5,38 +5,32 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import iob.data.UserEntity;
-import iob.data.UserRole;
+import iob.restAPI.UserBoundary;
+import iob.utility.user.UserConverter;
 import iob.data.UserCrud;
-import smarTravel.DomainWithEmail;
-import smarTravel.users.UserBoundary;
 
 @Service
 public class UserServicesJpa implements UserServices {
-
-	private String configurableDomain;
+	
 	private UserCrud userCrud;
-
-	@Value("${configurable.domain.text:2022b}")
-	public void setConfigurableDomain(String configurableDomain) {
-		this.configurableDomain = configurableDomain;
-	}
+	private UserConverter userConverter;
 	
 	@Autowired
-	public UserServicesJpa (UserCrud userCrud) {
+	public UserServicesJpa (UserCrud userCrud, UserConverter userConverter) {
 		this.userCrud = userCrud;
+		this.userConverter = userConverter;
 	}
 
 	@Override
 	@Transactional(readOnly = false)
 	public UserBoundary createUser(UserBoundary userToStore) {
-		UserEntity entity = toEntity(userToStore);
+		UserEntity entity = this.userConverter.toEntity(userToStore);
 		entity = this.userCrud.save(entity);
-		return this.toBoundary(entity);
+		return this.userConverter.toBoundary(entity);
 	}
 
 	@Override
@@ -47,19 +41,21 @@ public class UserServicesJpa implements UserServices {
 		if (optionalUser.isPresent()) {
 			entity = optionalUser.get();
 		}
-		return toBoundary(entity);
+		return this.userConverter.toBoundary(entity);
 	}
 
 	@Override
 	@Transactional(readOnly = false)
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
-		Optional<UserEntity> optionalUser = this.userCrud.findById(userEmail);
+		Optional<UserEntity> optionalUser = this.userCrud.findById(userEmail + "_" + userDomain);
 		if (optionalUser.isPresent()) {
-			UserEntity entity = toEntity(update);
+			UserEntity entity = this.userConverter.toEntity(update);
 			entity = this.userCrud.save(entity);
-			update = toBoundary(entity);
+			update = this.userConverter.toBoundary(entity);
+			return update;
+		}else {
+			throw new UserNotFoundException("Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
 		}
-		return update;
 	}
 
 	@Override
@@ -70,7 +66,7 @@ public class UserServicesJpa implements UserServices {
 
 		List<UserBoundary> rv = new ArrayList<>();
 		for (UserEntity user : iter) {
-			rv.add(this.toBoundary(user));
+			rv.add(this.userConverter.toBoundary(user));
 		}
 
 		return rv;
@@ -80,33 +76,6 @@ public class UserServicesJpa implements UserServices {
 	@Transactional(readOnly = false)
 	public void deleteAllUsers() {
 		userCrud.deleteAll();
-	}
-
-	public UserEntity toEntity(UserBoundary boundary) {
-		UserEntity entity = new UserEntity();
-
-		entity.setUserEmail(boundary.getUserId().getEmail());
-		entity.setUserDomain(configurableDomain);
-		entity.setAvatar(boundary.getAvatar());
-		try {
-			entity.setUserRole(UserRole.valueOf(boundary.getRole()));
-		} catch (Exception e) {
-
-		}
-		entity.setUsername(boundary.getUsername());
-
-		return entity;
-	}
-
-	public UserBoundary toBoundary(UserEntity entity) {
-		UserBoundary boundary = new UserBoundary();
-
-		boundary.setUserId(new DomainWithEmail(entity.getUserEmail(), entity.getUserDomain()));
-		boundary.setAvatar(entity.getAvatar());
-		boundary.setRole(entity.getUserRole().toString());
-		boundary.setUsername(entity.getUsername());
-
-		return boundary;
 	}
 
 }

@@ -1,4 +1,4 @@
-package smarTravel.instances;
+package iob.restAPI;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import smarTravel.Domain;
-import smarTravel.DomainWithEmail;
-import smarTravel.DomainWithId;
+import iob.utility.Domain;
+import iob.utility.DomainWithEmail;
+import iob.utility.DomainWithId;
+import iob.utility.instance.CreatedBy;
+import iob.utility.instance.Location;
 
 @RestController
 public class InstanceController {

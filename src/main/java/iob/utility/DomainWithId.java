@@ -1,4 +1,4 @@
-package smarTravel;
+package iob.utility;
 
 public class DomainWithId extends Domain{
 	

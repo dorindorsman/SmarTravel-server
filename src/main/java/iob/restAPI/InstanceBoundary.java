@@ -1,9 +1,11 @@
-package smarTravel.instances;
+package iob.restAPI;
 
 import java.util.Date;
 import java.util.Map;
 
-import smarTravel.DomainWithId;
+import iob.utility.DomainWithId;
+import iob.utility.instance.CreatedBy;
+import iob.utility.instance.Location;
 
 public class InstanceBoundary {
 	private DomainWithId instanceId;

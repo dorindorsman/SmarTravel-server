@@ -1,6 +1,6 @@
-package smarTravel.activities;
+package iob.utility.activity;
 
-import smarTravel.DomainWithId;
+import iob.utility.DomainWithId;
 
 public class Instance {
 

@@ -1,9 +1,11 @@
-package smarTravel.activities;
+package iob.restAPI;
 
 import java.util.Date;
 import java.util.Map;
 
-import smarTravel.DomainWithId;
+import iob.utility.DomainWithId;
+import iob.utility.activity.Instance;
+import iob.utility.activity.InvokedBy;
 
 public class ActivityBoundary {
 	private DomainWithId acticityId;

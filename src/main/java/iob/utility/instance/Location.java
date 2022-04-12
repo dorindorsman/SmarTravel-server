@@ -1,4 +1,4 @@
-package smarTravel.instances;
+package iob.utility.instance;
 
 public class Location {
 	private Double lat;
