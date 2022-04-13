@@ -1,25 +1,23 @@
 package iob.restAPI;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.utility.Domain;
-import iob.utility.DomainWithEmail;
-import iob.utility.DomainWithId;
-import iob.utility.activity.Instance;
-import iob.utility.activity.InvokedBy;
+import iob.logic.ActivityServices;
 
 @RestController
 public class ActivityController {
+	
+	private ActivityServices activityServices;
+	
+	@Autowired
+	public ActivityController(ActivityServices activityServices) {
+		this.activityServices = activityServices;
+	}
 	
 	@RequestMapping(
 			method = RequestMethod.GET,
@@ -27,20 +25,7 @@ public class ActivityController {
 			produces = MediaType.APPLICATION_JSON_VALUE)
 	public ActivityBoundary[] getAllActivities() {
 		
-		return Stream.of(new ActivityBoundary[] {
-				new ActivityBoundary(new DomainWithId("domain", "1")),
-				new ActivityBoundary(new DomainWithId("domain", "2")),
-				new ActivityBoundary(new DomainWithId("domain", "3"))}
-			).map(activityBoundary->{
-				activityBoundary.setType("temp");
-				activityBoundary.setCreatedTimestamp(new Date());
-				activityBoundary.setInstance(new Instance(new DomainWithId("ins", "10")));
-				activityBoundary.setInvokedBy(new InvokedBy(new DomainWithEmail("dom", "user")));
-				activityBoundary.setActivityAttributes(new HashMap<String, Object>());
-				return activityBoundary;
-			})// Stream<ActivityBoundary>
-			.collect(Collectors.toList())// List<ActivityBoundary>
-			.toArray(new ActivityBoundary[0]);// ActivityBoundary[]
+		return this.activityServices.getAllActivities().toArray(new ActivityBoundary[0]);
 	}
 	
 	@RequestMapping(
@@ -50,15 +35,14 @@ public class ActivityController {
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 		public Object createActivity (@RequestBody ActivityBoundary boundary) {
 	
-			boundary.setActicityId(new DomainWithId("", UUID.randomUUID().toString()));
-			
-			return boundary;
+			return this.activityServices.invokeActivity(boundary);
 		}
 	
 	@RequestMapping(
 			method = RequestMethod.DELETE,
 			path = "/iob/admin/activities")
 		public void deleteAllUsers () {
-			// delete activities from db here
+
+			this.activityServices.deleteAllActivities();
 		}
 }

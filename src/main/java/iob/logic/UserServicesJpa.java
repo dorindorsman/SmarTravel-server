@@ -40,8 +40,10 @@ public class UserServicesJpa implements UserServices {
 		UserEntity entity = new UserEntity();
 		if (optionalUser.isPresent()) {
 			entity = optionalUser.get();
+			return this.userConverter.toBoundary(entity);
+		}else {
+			throw new ObjNotFoundException("Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
 		}
-		return this.userConverter.toBoundary(entity);
 	}
 
 	@Override
@@ -54,7 +56,7 @@ public class UserServicesJpa implements UserServices {
 			update = this.userConverter.toBoundary(entity);
 			return update;
 		}else {
-			throw new UserNotFoundException("Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
+			throw new ObjNotFoundException("Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
 		}
 	}
 

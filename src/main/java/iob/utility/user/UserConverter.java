@@ -29,11 +29,13 @@ public class UserConverter {
 
 		entity.setUserId(getUserId(boundary.getUserId().getEmail(), configurableDomain));
 		entity.setAvatar(boundary.getAvatar());
+		
 		try {
 			entity.setUserRole(UserRole.valueOf(boundary.getRole()));
 		} catch (Exception e) {
-
+			entity.setUserRole(UserRole.PLAYER); // Default value
 		}
+		
 		entity.setUsername(boundary.getUsername());
 
 		return entity;

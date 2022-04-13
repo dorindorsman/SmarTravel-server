@@ -4,21 +4,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
-public class UserNotFoundException extends RuntimeException {
+public class ObjNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 3768342608665178815L;
 
-	public UserNotFoundException() {
+	public ObjNotFoundException() {
 	}
 
-	public UserNotFoundException(String message) {
+	public ObjNotFoundException(String message) {
 		super(message);
 	}
 
-	public UserNotFoundException(Throwable cause) {
+	public ObjNotFoundException(Throwable cause) {
 		super(cause);
 	}
 
-	public UserNotFoundException(String message, Throwable cause) {
+	public ObjNotFoundException(String message, Throwable cause) {
 		super(message, cause);
 	}
 

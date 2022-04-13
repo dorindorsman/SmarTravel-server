@@ -1,7 +1,6 @@
 package iob.restAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,12 +15,6 @@ import iob.utility.DomainWithEmail;
 public class UserController {
 	
 	private UserServices userServices;
-	private String configurableDomain;
-	
-	@Value("${configurable.domain.text:2022b}")
-	public void setConfigurableDomain(String configurableDomain) {
-		this.configurableDomain = configurableDomain;
-	}
 	
 	@Autowired
 	public UserController(UserServices userServices) {
@@ -56,7 +49,7 @@ public class UserController {
 		public UserBoundary createUser (@RequestBody NewUserBoundary boundary) {
 		
 		UserBoundary userBoundary = new UserBoundary();
-		userBoundary.setUserId(new DomainWithEmail(configurableDomain, boundary.getEmail()));
+		userBoundary.setUserId(new DomainWithEmail(null, boundary.getEmail()));
 		userBoundary.setAvatar(boundary.getAvatar());
 		userBoundary.setRole(boundary.getRole());
 		userBoundary.setUsername(boundary.getUsername());
