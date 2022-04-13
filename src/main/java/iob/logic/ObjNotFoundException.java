@@ -8,6 +8,7 @@ public class ObjNotFoundException extends RuntimeException {
 	private static final long serialVersionUID = 3768342608665178815L;
 
 	public ObjNotFoundException() {
+		
 	}
 
 	public ObjNotFoundException(String message) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,12 +16,18 @@ import iob.data.UserCrud;
 
 @Service
 public class UserServicesJpa implements UserServices {
-	
+
 	private UserCrud userCrud;
 	private UserConverter userConverter;
+	private String configurableDomain;
 	
+	@Value("${configurable.domain.text:2022b}")
+	public void setConfigurableDomain(String configurableDomain) {
+		this.configurableDomain = configurableDomain;
+	}
+
 	@Autowired
-	public UserServicesJpa (UserCrud userCrud, UserConverter userConverter) {
+	public UserServicesJpa(UserCrud userCrud, UserConverter userConverter) {
 		this.userCrud = userCrud;
 		this.userConverter = userConverter;
 	}
@@ -28,6 +35,7 @@ public class UserServicesJpa implements UserServices {
 	@Override
 	@Transactional(readOnly = false)
 	public UserBoundary createUser(UserBoundary userToStore) {
+		userToStore.getUserId().setDomain(configurableDomain);
 		UserEntity entity = this.userConverter.toEntity(userToStore);
 		entity = this.userCrud.save(entity);
 		return this.userConverter.toBoundary(entity);
@@ -36,28 +44,33 @@ public class UserServicesJpa implements UserServices {
 	@Override
 	@Transactional(readOnly = true)
 	public UserBoundary login(String userDomain, String userEmail) {
-		Optional<UserEntity> optionalUser = this.userCrud.findById(userEmail);
-		UserEntity entity = new UserEntity();
+		return this.userConverter.toBoundary(getUserEntityById(userDomain, userEmail));
+	}
+	
+	private UserEntity getUserEntityById(String userDomain, String userEmail) {
+		Optional<UserEntity> optionalUser = this.userCrud.findById(userEmail + "_" + userDomain);
 		if (optionalUser.isPresent()) {
-			entity = optionalUser.get();
-			return this.userConverter.toBoundary(entity);
-		}else {
-			throw new ObjNotFoundException("Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
+			return optionalUser.get();
+		} else {
+			throw new ObjNotFoundException(
+					"Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
 		}
 	}
 
 	@Override
 	@Transactional(readOnly = false)
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
-		Optional<UserEntity> optionalUser = this.userCrud.findById(userEmail + "_" + userDomain);
-		if (optionalUser.isPresent()) {
-			UserEntity entity = this.userConverter.toEntity(update);
-			entity = this.userCrud.save(entity);
-			update = this.userConverter.toBoundary(entity);
-			return update;
-		}else {
-			throw new ObjNotFoundException("Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
-		}
+		UserEntity userEntity = getUserEntityById(userDomain, userEmail);
+		
+		UserEntity updatedEntity = userConverter.toEntity(update);
+		
+		userEntity.setAvatar(updatedEntity.getAvatar());
+		userEntity.setUsername(updatedEntity.getUsername());
+		userEntity.setUserRole(updatedEntity.getUserRole());
+		
+		userCrud.save(userEntity);
+		
+		return userConverter.toBoundary(userEntity);
 	}
 
 	@Override

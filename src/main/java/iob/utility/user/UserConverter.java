@@ -1,44 +1,76 @@
 package iob.utility.user;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import iob.data.UserEntity;
 import iob.data.UserRole;
+import iob.logic.BadRequestException;
 import iob.restAPI.UserBoundary;
 import iob.utility.DomainWithEmail;
 
 @Component
 public class UserConverter {
-	
+
 	private String configurableDomain;
-	
+	private String text;
+
 	@Value("${configurable.domain.text:2022b}")
 	public void setConfigurableDomain(String configurableDomain) {
 		this.configurableDomain = configurableDomain;
-	}
-	
-	private String getUserId(String email, String domain) {
-		if (email == null || domain == null)
-			return null;
-		return email + "_" + domain;
 	}
 
 	public UserEntity toEntity(UserBoundary boundary) {
 		UserEntity entity = new UserEntity();
 
-		entity.setUserId(getUserId(boundary.getUserId().getEmail(), configurableDomain));
-		entity.setAvatar(boundary.getAvatar());
-		
-		try {
-			entity.setUserRole(UserRole.valueOf(boundary.getRole()));
-		} catch (Exception e) {
-			entity.setUserRole(UserRole.PLAYER); // Default value
-		}
-		
-		entity.setUsername(boundary.getUsername());
+		// Make sure new users email addresses are indeed standard addresses
+		// Regular Expression
+		text = boundary.getUserId().getEmail();
+		checkNull(text);
+		checkValidEmail(text);
+		entity.setUserId(text + "_" + configurableDomain);
+
+		// Make sure that the role of users contains valid values
+		text = boundary.getRole();
+		checkRole(text);
+		entity.setUserRole(UserRole.valueOf(text));
+
+		// Make sure the user names are not null or empty,
+		text = boundary.getUsername();
+		checkNull(text);
+		entity.setUsername(text);
+
+		text = boundary.getAvatar();
+		checkNull(text);
+		entity.setAvatar(text);
 
 		return entity;
+	}
+
+	private void checkNull(String text) {
+		if (text == null || text.isEmpty())
+			throw new BadRequestException();
+	}
+
+	private void checkValidEmail(String email) {
+		String regex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+		// Compile regular expression to get the pattern
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(email);
+		if (!matcher.matches())
+			throw new BadRequestException();
+
+	}
+
+	private void checkRole(String role) {
+		try {
+			UserRole.valueOf(role);
+		} catch (Exception e) {
+			throw new BadRequestException();
+		}
 	}
 
 	public UserBoundary toBoundary(UserEntity entity) {

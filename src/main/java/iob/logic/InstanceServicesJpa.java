@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import iob.data.InstanceCrud;
+import iob.data.InstanceEntity;
 import iob.restAPI.InstanceBoundary;
 import iob.utility.instance.InstanceConvertor;
 
@@ -22,11 +24,15 @@ public class InstanceServicesJpa implements InstanceServices{
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public InstanceBoundary createInstance(InstanceBoundary instance) {
-		return null;
+		InstanceEntity instanceEntity = instanceConvertor.toEntity(instance);
+		instanceCrud.save(instanceEntity);
+		return instanceConvertor.toBoundary(instanceEntity);
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public InstanceBoundary updateInstance(String instanceDomain, String instanceId, InstanceBoundary update) {
 		return null;
 	}

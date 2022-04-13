@@ -13,16 +13,16 @@ import javax.persistence.TemporalType;
 /*
 INSTANCE_TABLE
 ------------------------------------------------------------------------------------------------------------------------------
-USER_ID		 | TYPE          | NAME 		 | ACTIVE	 | CREATED_TIME_STAMP | CREATED_BY   | LOCATION     | INSTANCE_ATTRIBUTES      
-VARCHAR(255) | VARCHAR(255)  |VARCHAR(255)   | boolean   | 					  | VARCHAR(255) | VARCHAR(255) | CLOB 
-<PK>		 |               |            	 |           |         			  |              |              |              
+INSTANCE_ID		 | TYPE          | NAME 		 | ACTIVE	 | CREATED_TIME_STAMP | CREATED_BY   | LOCATION     | INSTANCE_ATTRIBUTES      
+VARCHAR(255)     | VARCHAR(255)  |VARCHAR(255)   | boolean   | 					  | VARCHAR(255) | VARCHAR(255) | CLOB 
+<PK>		     |               |            	 |           |         			  |              |              |              
  */
 
 @Entity
 @Table(name = "INSTANCE_TABLE")
 public class InstanceEntity {
 
-	private String userId;
+	private String instanceId;
 	private String type;
 	private String name;
 	private boolean active;
@@ -33,12 +33,12 @@ public class InstanceEntity {
 	private String instanceAttributes;
 
 	@Id
-	public String getUserId() {
-		return userId;
+	public String getInstanceId() {
+		return instanceId;
 	}
 
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
 	}
 
 	public String getType() {
