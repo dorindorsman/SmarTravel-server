@@ -47,6 +47,14 @@ public class ActivityEntity {
 	public void setType(String type) {
 		this.type = type;
 	}
+	
+	public String getInvokedBy() {
+		return invokedBy;
+	}
+
+	public void setInvokedBy(String invokedBy) {
+		this.invokedBy = invokedBy;
+	}
 
 	public String getInstance() {
 		return instance;

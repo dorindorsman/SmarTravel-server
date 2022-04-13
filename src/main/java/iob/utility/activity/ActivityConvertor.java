@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import iob.data.ActivityEntity;
+import iob.logic.BadRequestException;
 import iob.restAPI.ActivityBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
@@ -17,7 +18,6 @@ import iob.utility.DomainWithId;
 @Component
 public class ActivityConvertor {
 
-	private String configurableDomain;
 	private ObjectMapper jackson;
 
 	@PostConstruct
@@ -25,44 +25,54 @@ public class ActivityConvertor {
 		this.jackson = new ObjectMapper();
 	}
 
-	@Value("${configurable.domain.text:2022b}")
-	public void setConfigurableDomain(String configurableDomain) {
-		this.configurableDomain = configurableDomain;
-	}
-
-	private String getId(String id, String domain) {
+	private String getId(String domain, String id) {
 		if (id == null || domain == null)
 			return null;
-		return id + "_" + domain;
+		return domain + "_" + id;
 	}
 
 	public ActivityEntity toEntity(ActivityBoundary boundary) {
 		ActivityEntity entity = new ActivityEntity();
 
-		entity.setActicityId(getId(boundary.getActicityId().getId(), boundary.getActicityId().getDomain()));
 		entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-		entity.setInstance(getId(boundary.getInstance().getInstanceId().getId(),
-				boundary.getInstance().getInstanceId().getDomain()));
+		entity.setActicityId(getId(boundary.getActicityId().getDomain(), boundary.getActicityId().getId()));
+
+		String text = boundary.getType();
+		checkNull(text);
 		entity.setType(boundary.getType());
-		entity.setActivityAttributes(toStringFromMap(boundary.getActivityAttributes()));
+
+		if (boundary.getActivityAttributes() != null)
+			entity.setActivityAttributes(toStringFromMap(boundary.getActivityAttributes()));
+
+		entity.setInvokedBy(
+				getId(boundary.getInvokedBy().getUserId().getDomain(), boundary.getInvokedBy().getUserId().getEmail()));
 		
+		entity.setInstance(getId(boundary.getInstance().getInstanceId().getDomain(),
+				boundary.getInstance().getInstanceId().getId()));
 		return entity;
+	}
+
+	private void checkNull(String text) {
+		if (text == null || text.isEmpty())
+			throw new BadRequestException();
 	}
 
 	public ActivityBoundary toBoundary(ActivityEntity entity) {
 		ActivityBoundary boundary = new ActivityBoundary();
-		
+
 		String[] splitedId = entity.getActicityId().split("_");
 		boundary.setActicityId(new DomainWithId(splitedId[0], splitedId[1]));
-		
-		boundary.setActivityAttributes(toMapFromJsonString(entity.getActivityAttributes()));
+
+		if (entity.getActivityAttributes() != null)
+			boundary.setActivityAttributes(toMapFromJsonString(entity.getActivityAttributes()));
+
 		boundary.setCreatedTimestamp(entity.getCreatedTimestamp());
 		String[] splitedInstanceId = entity.getInstance().split("_");
 		boundary.setInstance(new Instance(new DomainWithId(splitedInstanceId[0], splitedInstanceId[1])));
-		
-		String[] splitedInvokedById = entity.getInstance().split("_");
+
+		String[] splitedInvokedById = entity.getInvokedBy().split("_");
 		boundary.setInvokedBy(new InvokedBy(new DomainWithEmail(splitedInvokedById[0], splitedInvokedById[1])));
-		
+
 		boundary.setType(entity.getType());
 
 		return boundary;

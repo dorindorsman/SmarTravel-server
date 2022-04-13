@@ -48,7 +48,7 @@ public class UserServicesJpa implements UserServices {
 	}
 	
 	private UserEntity getUserEntityById(String userDomain, String userEmail) {
-		Optional<UserEntity> optionalUser = this.userCrud.findById(userEmail + "_" + userDomain);
+		Optional<UserEntity> optionalUser = this.userCrud.findById(userDomain + "_" + userEmail);
 		if (optionalUser.isPresent()) {
 			return optionalUser.get();
 		} else {

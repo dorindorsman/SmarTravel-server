@@ -31,7 +31,7 @@ public class UserConverter {
 		text = boundary.getUserId().getEmail();
 		checkNull(text);
 		checkValidEmail(text);
-		entity.setUserId(text + "_" + configurableDomain);
+		entity.setUserId(configurableDomain + "_" + text);
 
 		// Make sure that the role of users contains valid values
 		text = boundary.getRole();

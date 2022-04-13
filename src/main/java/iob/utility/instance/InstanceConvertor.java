@@ -4,12 +4,12 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import iob.data.InstanceEntity;
+import iob.logic.BadRequestException;
 import iob.restAPI.InstanceBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
@@ -17,7 +17,6 @@ import iob.utility.DomainWithId;
 @Component
 public class InstanceConvertor {
 
-	private String configurableDomain;
 	private ObjectMapper jackson;
 
 	@PostConstruct
@@ -25,15 +24,10 @@ public class InstanceConvertor {
 		this.jackson = new ObjectMapper();
 	}
 
-	@Value("${configurable.domain.text:2022b}")
-	public void setConfigurableDomain(String configurableDomain) {
-		this.configurableDomain = configurableDomain;
-	}
-
-	private String getId(String id, String domain) {
+	private String getId(String domain, String id) {
 		if (id == null || domain == null)
 			return null;
-		return id + "_" + domain;
+		return domain + "_" + id;
 	}
 
 	public InstanceEntity toEntity(InstanceBoundary boundary) {
@@ -42,22 +36,26 @@ public class InstanceConvertor {
 		entity.setActive(boundary.isActive());
 
 		entity.setCreatedBy(
-				getId(boundary.getCreatedBy().getUserId().getEmail(), boundary.getCreatedBy().getUserId().getDomain()));
+				getId(boundary.getCreatedBy().getUserId().getDomain(),
+						boundary.getCreatedBy().getUserId().getEmail()));
 
 		entity.setCreatedTimestamp(boundary.getCreatedTimestamp());
-		
-		entity.setInstanceAttributes(toStringFromMap(boundary.getInstanceAttributes()));
-		
+
+		if (boundary.getInstanceAttributes() != null)
+			entity.setInstanceAttributes(toStringFromMap(boundary.getInstanceAttributes()));
+
 		entity.setLocationLat(boundary.getLocation().getLat());
-		
+
 		entity.setLocationLng(boundary.getLocation().getLng());
-		
+
+		checkNull(boundary.getName());
 		entity.setName(boundary.getName());
-		
+
+		checkNull(boundary.getType());
 		entity.setType(boundary.getType());
-		
-		entity.setInstanceId(getId(boundary.getInstanceId().getId(), boundary.getInstanceId().getDomain()));
-		
+
+		entity.setInstanceId(getId(boundary.getInstanceId().getDomain(), boundary.getInstanceId().getId()));
+
 		return entity;
 	}
 
@@ -77,12 +75,18 @@ public class InstanceConvertor {
 
 		boundary.setType(entity.getType());
 
-		boundary.setInstanceAttributes(toMapFromJsonString(entity.getInstanceAttributes()));
+		if (entity.getInstanceAttributes() != null)
+			boundary.setInstanceAttributes(toMapFromJsonString(entity.getInstanceAttributes()));
 
-		String[] splitedInstanceId = entity.getCreatedBy().split("_");
+		String[] splitedInstanceId = entity.getInstanceId().split("_");
 		boundary.setInstanceId(new DomainWithId(splitedInstanceId[0], splitedInstanceId[1]));
 
 		return boundary;
+	}
+
+	private void checkNull(String text) {
+		if (text == null || text.isEmpty())
+			throw new BadRequestException();
 	}
 
 	private String toStringFromMap(Map<String, Object> object) {
