@@ -7,15 +7,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.ActivityServices;
+import iob.logic.ActivitiesService;
 
 @RestController
 public class ActivityController {
 	
-	private ActivityServices activityServices;
+	private ActivitiesService activityServices;
 	
 	@Autowired
-	public ActivityController(ActivityServices activityServices) {
+	public ActivityController(ActivitiesService activityServices) {
 		this.activityServices = activityServices;
 	}
 	

@@ -4,7 +4,7 @@ import java.util.List;
 
 import iob.restAPI.ActivityBoundary;
 
-public interface ActivityServices {
+public interface ActivitiesService {
 	public Object invokeActivity(ActivityBoundary activityBoundary);
 	public List<ActivityBoundary> getAllActivities();
 	public void deleteAllActivities();

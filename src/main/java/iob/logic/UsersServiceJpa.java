@@ -10,24 +10,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import iob.data.UserEntity;
+import iob.logic.exceptions.BadRequestException;
+import iob.logic.exceptions.ObjNotFoundException;
 import iob.restAPI.UserBoundary;
 import iob.utility.user.UserConverter;
 import iob.data.UserCrud;
 
 @Service
-public class UserServicesJpa implements UserServices {
+public class UsersServiceJpa implements UsersService {
 
 	private UserCrud userCrud;
 	private UserConverter userConverter;
 	private String configurableDomain;
 	
-	@Value("${configurable.domain.text:2022b}")
+	@Value("${spring.application.name:2022b}")
 	public void setConfigurableDomain(String configurableDomain) {
 		this.configurableDomain = configurableDomain;
 	}
 
 	@Autowired
-	public UserServicesJpa(UserCrud userCrud, UserConverter userConverter) {
+	public UsersServiceJpa(UserCrud userCrud, UserConverter userConverter) {
 		this.userCrud = userCrud;
 		this.userConverter = userConverter;
 	}
@@ -47,6 +49,7 @@ public class UserServicesJpa implements UserServices {
 		return this.userConverter.toBoundary(getUserEntityById(userDomain, userEmail));
 	}
 	
+	@Transactional(readOnly = true)
 	private UserEntity getUserEntityById(String userDomain, String userEmail) {
 		Optional<UserEntity> optionalUser = this.userCrud.findById(userDomain + "_" + userEmail);
 		if (optionalUser.isPresent()) {
@@ -60,13 +63,15 @@ public class UserServicesJpa implements UserServices {
 	@Override
 	@Transactional(readOnly = false)
 	public UserBoundary updateUser(String userDomain, String userEmail, UserBoundary update) {
+		if (userDomain == null || userDomain.isEmpty())
+			throw new BadRequestException();
+		if (userEmail == null || userEmail.isEmpty())
+			throw new BadRequestException();
+		if (update == null)
+			throw new BadRequestException();
+		
 		UserEntity userEntity = getUserEntityById(userDomain, userEmail);
-		
-		UserEntity updatedEntity = userConverter.toEntity(update);
-		
-		userEntity.setAvatar(updatedEntity.getAvatar());
-		userEntity.setUsername(updatedEntity.getUsername());
-		userEntity.setUserRole(updatedEntity.getUserRole());
+		userEntity = userConverter.updateEntityByBoundary(userEntity, update);
 		
 		userCrud.save(userEntity);
 		

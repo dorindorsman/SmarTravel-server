@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.UserServices;
+import iob.logic.UsersService;
 import iob.utility.DomainWithEmail;
 
 @RestController
 public class UserController {
 	
-	private UserServices userServices;
+	private UsersService userServices;
 	
 	@Autowired
-	public UserController(UserServices userServices) {
+	public UserController(UsersService userServices) {
 		this.userServices = userServices;
 	}
 

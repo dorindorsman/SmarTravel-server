@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import iob.data.ActivityEntity;
-import iob.logic.BadRequestException;
+import iob.logic.exceptions.BadRequestException;
 import iob.restAPI.ActivityBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;

@@ -15,13 +15,15 @@ import iob.data.InstanceCrud;
 import iob.data.InstanceEntity;
 import iob.data.UserCrud;
 import iob.data.UserEntity;
+import iob.logic.exceptions.BadRequestException;
+import iob.logic.exceptions.ObjNotFoundException;
 import iob.restAPI.InstanceBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
 import iob.utility.instance.InstanceConvertor;
 
 @Service
-public class InstanceServicesJpa implements InstanceServices {
+public class InstancesServiceJpa implements InstancesService {
 
 	private InstanceCrud instanceCrud;
 	private UserCrud userCrud;
@@ -29,13 +31,13 @@ public class InstanceServicesJpa implements InstanceServices {
 	private String configurableDomain;
 
 	@Autowired
-	public InstanceServicesJpa(UserCrud userCrud, InstanceCrud instanceCrud, InstanceConvertor instanceConvertor) {
+	public InstancesServiceJpa(UserCrud userCrud, InstanceCrud instanceCrud, InstanceConvertor instanceConvertor) {
 		this.userCrud = userCrud;
 		this.instanceCrud = instanceCrud;
 		this.instanceConvertor = instanceConvertor;
 	}
 
-	@Value("${configurable.domain.text:2022b}")
+	@Value("${spring.application.name:2022b}")
 	public void setConfigurableDomain(String configurableDomain) {
 		this.configurableDomain = configurableDomain;
 	}
@@ -57,31 +59,28 @@ public class InstanceServicesJpa implements InstanceServices {
 		return instanceConvertor.toBoundary(instanceEntity);
 	}
 	
+	@Transactional(readOnly = true)
 	private boolean checkUserIdInDB(DomainWithEmail domainWithEmail) {
 		String id = domainWithEmail.getDomain() + "_" + domainWithEmail.getEmail();
 
-		Iterable<UserEntity> users = userCrud.findAll();
-
-		for (UserEntity u : users) {
-			if (u.getUserId().equals(id))
-				return true;
-		}
-
+		Optional<UserEntity> op = userCrud.findById(id);
+		if (op.isPresent())
+			return true;
 		return false;
 	}
 
 	@Override
 	@Transactional(readOnly = false)
 	public InstanceBoundary updateInstance(String instanceDomain, String instanceId, InstanceBoundary update) {
+		if (instanceDomain == null || instanceDomain.isEmpty())
+				throw new BadRequestException();
+		if (instanceId == null || instanceId.isEmpty())
+			throw new BadRequestException();
+		if (update == null)
+			throw new BadRequestException();
+		
 		InstanceEntity instanceEntity = getInstanceEntityById(instanceDomain, instanceId);
-		InstanceEntity updatedEntity = instanceConvertor.toEntity(update);
-
-		instanceEntity.setActive(updatedEntity.isActive());
-		instanceEntity.setInstanceAttributes(updatedEntity.getInstanceAttributes());
-		instanceEntity.setLocationLat(updatedEntity.getLocationLat());
-		instanceEntity.setLocationLng(updatedEntity.getLocationLng());
-		instanceEntity.setName(updatedEntity.getName());
-		instanceEntity.setType(updatedEntity.getType());
+		instanceEntity = instanceConvertor.updateEntityByBoundary(instanceEntity, update);
 
 		instanceCrud.save(instanceEntity);
 
@@ -93,8 +92,10 @@ public class InstanceServicesJpa implements InstanceServices {
 		return instanceConvertor.toBoundary(getInstanceEntityById(instanceDomain, instanceId));
 	}
 
+	@Transactional(readOnly = true)
 	private InstanceEntity getInstanceEntityById(String instanceDomain, String instanceId) {
-		Optional<InstanceEntity> op = instanceCrud.findById(instanceDomain + "_" + instanceId);
+		String id = instanceDomain + "_" + instanceId;
+		Optional<InstanceEntity> op = instanceCrud.findById(id);
 		if (op.isPresent()) {
 			return op.get();
 		} else {
@@ -104,6 +105,7 @@ public class InstanceServicesJpa implements InstanceServices {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<InstanceBoundary> getAllInstances() {
 		Iterable<InstanceEntity> iter = instanceCrud.findAll();
 
@@ -116,6 +118,7 @@ public class InstanceServicesJpa implements InstanceServices {
 	}
 
 	@Override
+	@Transactional(readOnly = false)
 	public void deleteAllInstances() {
 		instanceCrud.deleteAll();
 	}

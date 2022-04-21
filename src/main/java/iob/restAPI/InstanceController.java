@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.InstanceServices;
+import iob.logic.InstancesService;
 
 @RestController
 public class InstanceController {
 	
-	private InstanceServices instanceServices;
+	private InstancesService instanceServices;
 	
 	@Autowired
-	public InstanceController(InstanceServices instanceServices) {
+	public InstanceController(InstancesService instanceServices) {
 		this.instanceServices = instanceServices;
 	}
 

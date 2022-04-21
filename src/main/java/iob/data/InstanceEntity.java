@@ -25,11 +25,11 @@ public class InstanceEntity {
 	private String instanceId;
 	private String type;
 	private String name;
-	private boolean active;
+	private Boolean active;
 	private Date createdTimestamp;
 	private String createdBy;
-	private double LocationLat;
-	private double LocationLng;
+	private Double LocationLat;
+	private Double LocationLng;
 	private String instanceAttributes;
 
 	@Id
@@ -57,11 +57,11 @@ public class InstanceEntity {
 		this.name = name;
 	}
 
-	public boolean isActive() {
+	public Boolean getActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 
@@ -83,19 +83,19 @@ public class InstanceEntity {
 		this.createdBy = createdBy;
 	}
 
-	public double getLocationLat() {
+	public Double getLocationLat() {
 		return LocationLat;
 	}
 
-	public void setLocationLat(double locationLat) {
+	public void setLocationLat(Double locationLat) {
 		LocationLat = locationLat;
 	}
 
-	public double getLocationLng() {
+	public Double getLocationLng() {
 		return LocationLng;
 	}
 
-	public void setLocationLng(double locationLng) {
+	public void setLocationLng(Double locationLng) {
 		LocationLng = locationLng;
 	}
 

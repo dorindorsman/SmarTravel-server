@@ -8,7 +8,7 @@ import iob.utility.activity.Instance;
 import iob.utility.activity.InvokedBy;
 
 public class ActivityBoundary {
-	private DomainWithId acticityId;
+	private DomainWithId activityId;
 	private String type;
 	private Instance instance;
 	private Date createdTimestamp;
@@ -21,15 +21,15 @@ public class ActivityBoundary {
 
 	public ActivityBoundary(DomainWithId acticityId) {
 		super();
-		this.acticityId = acticityId;
+		this.activityId = acticityId;
 	}
 
 	public DomainWithId getActicityId() {
-		return acticityId;
+		return activityId;
 	}
 
 	public void setActicityId(DomainWithId acticityId) {
-		this.acticityId = acticityId;
+		this.activityId = acticityId;
 	}
 
 	public String getType() {
@@ -74,7 +74,7 @@ public class ActivityBoundary {
 
 	@Override
 	public String toString() {
-		return "ActivityBoundary [acticityId=" + acticityId + ", type=" + type + ", instance=" + instance
+		return "ActivityBoundary [acticityId=" + activityId + ", type=" + type + ", instance=" + instance
 				+ ", createdTimestamp=" + createdTimestamp + ", invokedBy=" + invokedBy + ", activityAttributes="
 				+ activityAttributes + "]";
 	}

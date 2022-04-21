@@ -11,7 +11,7 @@ public class InstanceBoundary {
 	private DomainWithId instanceId;
 	private String type;
 	private String name;
-	private boolean active;
+	private Boolean active;
 	private Date createdTimestamp;
 	private CreatedBy createdBy;
 	private Location location;
@@ -49,11 +49,11 @@ public class InstanceBoundary {
 		this.name = name;
 	}
 
-	public boolean isActive() {
+	public Boolean getActive() {
 		return active;
 	}
 
-	public void setActive(boolean active) {
+	public void setActive(Boolean active) {
 		this.active = active;
 	}
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import iob.data.UserEntity;
 import iob.data.UserRole;
-import iob.logic.BadRequestException;
+import iob.logic.exceptions.BadRequestException;
 import iob.restAPI.UserBoundary;
 import iob.utility.DomainWithEmail;
 
@@ -18,9 +18,29 @@ public class UserConverter {
 	private String configurableDomain;
 	private String text;
 
-	@Value("${configurable.domain.text:2022b}")
+	@Value("${spring.application.name:2022b}")
 	public void setConfigurableDomain(String configurableDomain) {
 		this.configurableDomain = configurableDomain;
+	}
+	
+	public UserEntity updateEntityByBoundary(UserEntity userEntity, UserBoundary update) {
+		if (update.getAvatar() != null && !update.getAvatar().isEmpty()) {
+			userEntity.setAvatar(update.getAvatar());
+		}
+		
+		if (update.getUsername() != null && !update.getUsername().isEmpty()) {
+			userEntity.setUsername(update.getUsername());
+		}
+		
+		if(update.getRole() != null) {
+			try {
+				UserRole.valueOf(update.getRole());
+				userEntity.setUserRole(UserRole.valueOf(update.getRole()));
+			} catch (Exception e) {
+			}
+		}
+		
+		return userEntity;
 	}
 
 	public UserEntity toEntity(UserBoundary boundary) {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import iob.data.InstanceEntity;
-import iob.logic.BadRequestException;
+import iob.logic.exceptions.BadRequestException;
 import iob.restAPI.InstanceBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
@@ -29,11 +29,34 @@ public class InstanceConvertor {
 			return null;
 		return domain + "_" + id;
 	}
+	
+	public InstanceEntity updateEntityByBoundary(InstanceEntity entity, InstanceBoundary update) {
+		if (update.getActive() != null)
+			entity.setActive(update.getActive());
+		
+		if (update.getInstanceAttributes() != null)
+			entity.setInstanceAttributes(toStringFromMap(update.getInstanceAttributes()));
+		
+		if (update.getLocation() != null) {
+			if (update.getLocation().getLat() != null)
+				entity.setLocationLat(update.getLocation().getLat());
+			if (update.getLocation().getLng() != null)
+				entity.setLocationLng(update.getLocation().getLng());
+		}
+		
+		if (update.getName() != null && !update.getName().isEmpty())
+			entity.setName(update.getName());
+		
+		if (update.getType() != null && !update.getType().isEmpty())
+			entity.setType(update.getType());
+		
+		return entity;
+	}
 
 	public InstanceEntity toEntity(InstanceBoundary boundary) {
 		InstanceEntity entity = new InstanceEntity();
 
-		entity.setActive(boundary.isActive());
+		entity.setActive(boundary.getActive());
 
 		entity.setCreatedBy(
 				getId(boundary.getCreatedBy().getUserId().getDomain(),
@@ -62,7 +85,7 @@ public class InstanceConvertor {
 	public InstanceBoundary toBoundary(InstanceEntity entity) {
 		InstanceBoundary boundary = new InstanceBoundary();
 
-		boundary.setActive(entity.isActive());
+		boundary.setActive(entity.getActive());
 
 		String[] splitedId = entity.getCreatedBy().split("_");
 		boundary.setCreatedBy(new CreatedBy(new DomainWithEmail(splitedId[0], splitedId[1])));

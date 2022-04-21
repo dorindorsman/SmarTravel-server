@@ -3,6 +3,7 @@ package iob.logic;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,14 @@ import iob.data.InstanceCrud;
 import iob.data.InstanceEntity;
 import iob.data.UserCrud;
 import iob.data.UserEntity;
+import iob.logic.exceptions.BadRequestException;
 import iob.restAPI.ActivityBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
 import iob.utility.activity.ActivityConvertor;
 
 @Service
-public class ActivityServicesJpa implements ActivityServices {
+public class ActivitiesServiceJpa implements ActivitiesService {
 
 	private ActivityCrud activityCrud;
 	private UserCrud userCrud;
@@ -31,7 +33,7 @@ public class ActivityServicesJpa implements ActivityServices {
 	private String configurableDomain;
 
 	@Autowired
-	public ActivityServicesJpa(InstanceCrud instanceCrud, UserCrud userCrud, ActivityCrud activityCrud,
+	public ActivitiesServiceJpa(InstanceCrud instanceCrud, UserCrud userCrud, ActivityCrud activityCrud,
 			ActivityConvertor activityConvertor) {
 		this.instanceCrud = instanceCrud;
 		this.userCrud = userCrud;
@@ -39,7 +41,7 @@ public class ActivityServicesJpa implements ActivityServices {
 		this.activityConvertor = activityConvertor;
 	}
 
-	@Value("${configurable.domain.text:2022b}")
+	@Value("${spring.application.name:2022b}")
 	public void setConfigurableDomain(String configurableDomain) {
 		this.configurableDomain = configurableDomain;
 	}
@@ -65,29 +67,23 @@ public class ActivityServicesJpa implements ActivityServices {
 		return activityConvertor.toBoundary(activityEntity); // temp - json
 	}
 
+	@Transactional(readOnly = true)
 	private boolean checkUserIdInDB(DomainWithEmail domainWithEmail) {
 		String id = domainWithEmail.getDomain() + "_" + domainWithEmail.getEmail();
 
-		Iterable<UserEntity> users = userCrud.findAll();
-
-		for (UserEntity u : users) {
-			if (u.getUserId().equals(id))
-				return true;
-		}
-
+		Optional<UserEntity> op = userCrud.findById(id);
+		if (op.isPresent())
+			return true;
 		return false;
 	}
 	
+	@Transactional(readOnly = true)
 	private boolean checkInstanceIdInDB(DomainWithId domainWithId) {
 		String id = domainWithId.getDomain() + "_" + domainWithId.getId() ;
-
-		Iterable<InstanceEntity> insIterable = instanceCrud.findAll();
-
-		for (InstanceEntity i : insIterable) {
-			if (i.getInstanceId().equals(id))
-				return true;
-		}
-
+		
+		Optional<InstanceEntity> op = instanceCrud.findById(id);
+		if (op.isPresent())
+			return true;
 		return false;
 	}
 
