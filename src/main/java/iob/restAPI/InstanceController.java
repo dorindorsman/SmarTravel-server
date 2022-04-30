@@ -6,67 +6,64 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.InstancesService;
+import iob.logic.ExtendedInstancesService;
 
 @RestController
 public class InstanceController {
-	
-	private InstancesService instanceServices;
-	
+
+	private ExtendedInstancesService instanceServices;
+
 	@Autowired
-	public InstanceController(InstancesService instanceServices) {
+	public InstanceController(ExtendedInstancesService instanceServices) {
 		this.instanceServices = instanceServices;
 	}
 
-	@RequestMapping(
-			method = RequestMethod.GET,
-			path = "/iob/instances/{instanceDomain}/{instanceId}",
-			produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.GET, path = "/iob/instances/{instanceDomain}/{instanceId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public InstanceBoundary retrieveInstance(
 			@PathVariable("instanceDomain") String instanceDomain,
-			@PathVariable("instanceId") String instanceId) {
+			@PathVariable("instanceId") String instanceId,
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail) {
 
-		return this.instanceServices.getSpecificInstance(instanceDomain, instanceId);
+		return this.instanceServices.getSpecificInstance(instanceDomain, instanceId, userDomain, userEmail);
 	}
-	
-	@RequestMapping(
-			method = RequestMethod.GET,
-			path = "/iob/instances",
+
+	@RequestMapping(method = RequestMethod.GET, path = "/iob/instances",
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public InstanceBoundary[] getAllInstances() {
-		
-		return this.instanceServices.getAllInstances().toArray(new InstanceBoundary[0]);
+	public InstanceBoundary[] getAllInstances(
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		return this.instanceServices.getAllInstances(userDomain, userEmail, size, page)
+				.toArray(new InstanceBoundary[0]);
 	}
-	
-	@RequestMapping(
-			method = RequestMethod.POST,
-			path = "/iob/instances",
-			produces = MediaType.APPLICATION_JSON_VALUE,
-			consumes = MediaType.APPLICATION_JSON_VALUE)
-		public InstanceBoundary createInstance (@RequestBody InstanceBoundary boundary) {
-			
-			return this.instanceServices.createInstance(boundary);
-		}
-	
-	@RequestMapping(
-			method = RequestMethod.PUT,
-			path = "/iob/instances/{instanceDomain}/{instanceId}",
-			consumes = MediaType.APPLICATION_JSON_VALUE)
-		public void UpdateInstace (
-				@PathVariable("instanceDomain") String instanceDomain, 
-				@PathVariable("instanceId") String instanceId, 
-				@RequestBody InstanceBoundary updateBoundary) {
-			
-			this.instanceServices.updateInstance(instanceDomain, instanceId, updateBoundary);
-		}
-	
-	@RequestMapping(
-			method = RequestMethod.DELETE,
-			path = "/iob/admin/instances")
-		public void deleteAllInstances () {
-			
-			this.instanceServices.deleteAllInstances();
-		}
+
+	@RequestMapping(method = RequestMethod.POST, path = "/iob/instances", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public InstanceBoundary createInstance(@RequestBody InstanceBoundary boundary) {
+
+		return this.instanceServices.createInstance(boundary);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, path = "/iob/instances/{instanceDomain}/{instanceId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void UpdateInstace(
+			@PathVariable("instanceDomain") String instanceDomain,
+			@PathVariable("instanceId") String instanceId,
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail,
+			@RequestBody InstanceBoundary updateBoundary) {
+
+		this.instanceServices.updateInstance(instanceDomain, instanceId, updateBoundary, userDomain, userEmail);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, path = "/iob/admin/instances")
+	public void deleteAllInstances(
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail) {
+
+		this.instanceServices.deleteAllInstances(userDomain, userEmail);
+	}
 }

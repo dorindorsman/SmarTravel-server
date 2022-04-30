@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.NOT_FOUND)
 public class ObjNotFoundException extends RuntimeException {
-	private static final long serialVersionUID = 3768342608665178815L;
+	private static final long serialVersionUID = 7208965747696884299L;
 
 	public ObjNotFoundException() {
 		

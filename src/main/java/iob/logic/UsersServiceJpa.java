@@ -1,36 +1,35 @@
 package iob.logic;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import iob.data.UserEntity;
+import iob.data.UserRole;
 import iob.logic.exceptions.BadRequestException;
+import iob.logic.exceptions.DeprecatedMethodException;
 import iob.logic.exceptions.ObjNotFoundException;
 import iob.restAPI.UserBoundary;
 import iob.utility.user.UserConverter;
+import iob.data.ActivityCrud;
+import iob.data.InstanceCrud;
 import iob.data.UserCrud;
 
 @Service
-public class UsersServiceJpa implements UsersService {
+public class UsersServiceJpa extends ServiceJpa implements ExtendedUsersService {
 
-	private UserCrud userCrud;
 	private UserConverter userConverter;
-	private String configurableDomain;
-	
-	@Value("${spring.application.name:2022b}")
-	public void setConfigurableDomain(String configurableDomain) {
-		this.configurableDomain = configurableDomain;
-	}
 
 	@Autowired
-	public UsersServiceJpa(UserCrud userCrud, UserConverter userConverter) {
-		this.userCrud = userCrud;
+	public UsersServiceJpa(InstanceCrud instanceCrud, UserCrud userCrud, ActivityCrud activityCrud,
+			UserConverter userConverter) {
+		super(userCrud, activityCrud, instanceCrud);
 		this.userConverter = userConverter;
 	}
 
@@ -48,17 +47,6 @@ public class UsersServiceJpa implements UsersService {
 	public UserBoundary login(String userDomain, String userEmail) {
 		return this.userConverter.toBoundary(getUserEntityById(userDomain, userEmail));
 	}
-	
-	@Transactional(readOnly = true)
-	private UserEntity getUserEntityById(String userDomain, String userEmail) {
-		Optional<UserEntity> optionalUser = this.userCrud.findById(userDomain + "_" + userEmail);
-		if (optionalUser.isPresent()) {
-			return optionalUser.get();
-		} else {
-			throw new ObjNotFoundException(
-					"Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
-		}
-	}
 
 	@Override
 	@Transactional(readOnly = false)
@@ -69,33 +57,64 @@ public class UsersServiceJpa implements UsersService {
 			throw new BadRequestException();
 		if (update == null)
 			throw new BadRequestException();
-		
+
 		UserEntity userEntity = getUserEntityById(userDomain, userEmail);
 		userEntity = userConverter.updateEntityByBoundary(userEntity, update);
-		
+
 		userCrud.save(userEntity);
-		
+
 		return userConverter.toBoundary(userEntity);
 	}
 
 	@Override
-	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers() {
+		throw new DeprecatedMethodException("deprecated method - use deleteAllUsers with user domin and user email");
+	}
 
-		Iterable<UserEntity> iter = this.userCrud.findAll();
+	@Override
+	@Transactional(readOnly = true)
+	public List<UserBoundary> getAllUsers(String userDomain, String userEmail, int size, int page) {
+		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		if (userRole == null)
+			throw new BadRequestException();
 
-		List<UserBoundary> rv = new ArrayList<>();
-		for (UserEntity user : iter) {
-			rv.add(this.userConverter.toBoundary(user));
-		}
+		if (userRole != UserRole.ADMIN)
+			throw new BadRequestException();
 
-		return rv;
+		List<UserBoundary> allUserBoundaries = this.userCrud
+				.findAll(PageRequest.of(page, size, Direction.ASC, "userName")).stream()
+				.map(this.userConverter::toBoundary).collect(Collectors.toList());
+
+		return allUserBoundaries;
+	}
+
+	@Override
+	public void deleteAllUsers() {
+		throw new DeprecatedMethodException("deprecated method - use deleteAllUsers with user domin and user email");
 	}
 
 	@Override
 	@Transactional(readOnly = false)
-	public void deleteAllUsers() {
-		userCrud.deleteAll();
+	public void deleteAllUsers(String userDomain, String userEmail) {
+		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		if (userRole == null)
+			throw new BadRequestException();
+		if (userRole == UserRole.ADMIN) {
+			userCrud.deleteAll();
+			return;
+		}
+		throw new BadRequestException();
+	}
+
+	@Transactional(readOnly = true)
+	private UserEntity getUserEntityById(String userDomain, String userEmail) {
+		Optional<UserEntity> optionalUser = this.userCrud.findById(userDomain + "_" + userEmail);
+		if (optionalUser.isPresent()) {
+			return optionalUser.get();
+		} else {
+			throw new ObjNotFoundException(
+					"Could not find user by mail: " + userEmail + " and by domain: " + userDomain);
+		}
 	}
 
 }

@@ -6,19 +6,20 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.UsersService;
+import iob.logic.ExtendedUsersService;
 import iob.utility.DomainWithEmail;
 
 @RestController
 public class UserController {
 	
-	private UsersService userServices;
+	private ExtendedUsersService usersService;
 	
 	@Autowired
-	public UserController(UsersService userServices) {
-		this.userServices = userServices;
+	public UserController(ExtendedUsersService userServices) {
+		this.usersService = userServices;
 	}
 
 	@RequestMapping(
@@ -29,16 +30,20 @@ public class UserController {
 			@PathVariable("userDomain") String userDomain,
 			@PathVariable("userEmail") String userEmail) {
 		
-		return this.userServices.login(userDomain, userEmail);
+		return this.usersService.login(userDomain, userEmail);
 	}
 	
 	@RequestMapping(
 			method = RequestMethod.GET,
 			path = "/iob/admin/users",
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	public UserBoundary[] getAllUsers() {
+	public UserBoundary[] getAllUsers(
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
 		
-		return this.userServices.getAllUsers().toArray(new UserBoundary[0]);
+		return this.usersService.getAllUsers(userDomain, userEmail, size, page).toArray(new UserBoundary[0]);
 	}
 	
 	@RequestMapping(
@@ -54,7 +59,7 @@ public class UserController {
 		userBoundary.setRole(boundary.getRole());
 		userBoundary.setUsername(boundary.getUsername());
 		
-		return this.userServices.createUser(userBoundary);
+		return this.usersService.createUser(userBoundary);
 		}
 	
 	@RequestMapping(
@@ -66,16 +71,17 @@ public class UserController {
 				@PathVariable("userEmail") String userEmail, 
 				@RequestBody UserBoundary updateBoundary) {
 		
-			this.userServices.updateUser(userDomain, userEmail, updateBoundary);
+			this.usersService.updateUser(userDomain, userEmail, updateBoundary);
 			
 		}
 	
 	@RequestMapping(
 			method = RequestMethod.DELETE,
 			path = "/iob/admin/users")
-		public void deleteAllUsers () {
+		public void deleteAllUsers (
+				@RequestParam(name = "userDomain", required = true) String userDomain,
+				@RequestParam(name = "userEmail", required = true) String userEmail) {
 		
-			this.userServices.deleteAllUsers();
-			
+			this.usersService.deleteAllUsers(userDomain, userEmail);
 		}
 }
