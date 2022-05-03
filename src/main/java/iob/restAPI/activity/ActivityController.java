@@ -1,4 +1,4 @@
-package iob.restAPI;
+package iob.restAPI.activity;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.ExtendedActivitiesService;
+import iob.logic.activity.ExtendedActivitiesService;
 
 @RestController
 public class ActivityController {

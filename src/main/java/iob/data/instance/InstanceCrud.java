@@ -1,4 +1,4 @@
-package iob.data;
+package iob.data.instance;
 
 import java.util.List;
 

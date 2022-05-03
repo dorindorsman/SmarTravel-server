@@ -1,4 +1,4 @@
-package iob.data;
+package iob.data.user;
 
 public enum UserRole {
 	PLAYER,

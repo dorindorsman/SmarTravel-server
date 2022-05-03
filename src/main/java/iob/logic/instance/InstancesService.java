@@ -1,8 +1,8 @@
-package iob.logic;
+package iob.logic.instance;
 
 import java.util.List;
 
-import iob.restAPI.InstanceBoundary;
+import iob.restAPI.instance.InstanceBoundary;
 
 public interface InstancesService {
 	public InstanceBoundary createInstance(InstanceBoundary instance);

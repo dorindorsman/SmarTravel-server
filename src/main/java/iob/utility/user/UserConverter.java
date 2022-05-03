@@ -6,10 +6,10 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import iob.data.UserEntity;
-import iob.data.UserRole;
+import iob.data.user.UserEntity;
+import iob.data.user.UserRole;
 import iob.logic.exceptions.BadRequestException;
-import iob.restAPI.UserBoundary;
+import iob.restAPI.user.UserBoundary;
 import iob.utility.DomainWithEmail;
 
 @Component

@@ -1,4 +1,4 @@
-package iob.logic;
+package iob.logic.instance;
 
 import java.util.Date;
 import java.util.List;
@@ -12,15 +12,16 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import iob.data.ActivityCrud;
-import iob.data.InstanceCrud;
-import iob.data.InstanceEntity;
-import iob.data.UserCrud;
-import iob.data.UserRole;
+import iob.data.activity.ActivityCrud;
+import iob.data.instance.InstanceCrud;
+import iob.data.instance.InstanceEntity;
+import iob.data.user.UserCrud;
+import iob.data.user.UserRole;
+import iob.logic.ServiceJpa;
 import iob.logic.exceptions.BadRequestException;
 import iob.logic.exceptions.DeprecatedMethodException;
 import iob.logic.exceptions.ObjNotFoundException;
-import iob.restAPI.InstanceBoundary;
+import iob.restAPI.instance.InstanceBoundary;
 import iob.utility.DomainWithId;
 import iob.utility.instance.InstanceConvertor;
 

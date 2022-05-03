@@ -1,7 +1,8 @@
-package iob.logic;
+package iob.logic.user;
 
 import java.util.List;
-import iob.restAPI.UserBoundary;
+
+import iob.restAPI.user.UserBoundary;
 
 public interface ExtendedUsersService extends UsersService {
 	public List<UserBoundary> getAllUsers(String userDomain, String userEmail, int size, int page);

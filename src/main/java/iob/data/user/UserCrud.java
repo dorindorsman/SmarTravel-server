@@ -1,4 +1,4 @@
-package iob.data;
+package iob.data.user;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 

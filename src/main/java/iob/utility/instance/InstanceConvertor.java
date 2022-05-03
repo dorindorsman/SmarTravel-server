@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import iob.data.InstanceEntity;
+import iob.data.instance.InstanceEntity;
 import iob.logic.exceptions.BadRequestException;
-import iob.restAPI.InstanceBoundary;
+import iob.restAPI.instance.InstanceBoundary;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
 

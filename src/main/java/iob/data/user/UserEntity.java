@@ -1,4 +1,4 @@
-package iob.data;
+package iob.data.user;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;

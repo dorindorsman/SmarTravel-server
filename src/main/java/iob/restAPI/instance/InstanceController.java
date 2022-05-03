@@ -1,4 +1,4 @@
-package iob.restAPI;
+package iob.restAPI.instance;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import iob.logic.ExtendedInstancesService;
+import iob.logic.instance.ExtendedInstancesService;
 
 @RestController
 public class InstanceController {

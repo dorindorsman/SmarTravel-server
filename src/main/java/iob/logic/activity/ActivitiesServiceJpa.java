@@ -1,4 +1,4 @@
-package iob.logic;
+package iob.logic.activity;
 
 import java.util.Date;
 import java.util.List;
@@ -11,14 +11,15 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import iob.data.ActivityCrud;
-import iob.data.ActivityEntity;
-import iob.data.InstanceCrud;
-import iob.data.UserCrud;
-import iob.data.UserRole;
+import iob.data.activity.ActivityCrud;
+import iob.data.activity.ActivityEntity;
+import iob.data.instance.InstanceCrud;
+import iob.data.user.UserCrud;
+import iob.data.user.UserRole;
+import iob.logic.ServiceJpa;
 import iob.logic.exceptions.BadRequestException;
 import iob.logic.exceptions.DeprecatedMethodException;
-import iob.restAPI.ActivityBoundary;
+import iob.restAPI.activity.ActivityBoundary;
 import iob.utility.DomainWithId;
 import iob.utility.activity.ActivityConvertor;
 
@@ -37,6 +38,8 @@ public class ActivitiesServiceJpa extends ServiceJpa implements ExtendedActiviti
 	@Override
 	@Transactional(readOnly = false)
 	public Object invokeActivity(ActivityBoundary activityBoundary) {
+		
+		// player only - active only
 
 		activityBoundary.setActicityId(new DomainWithId(configurableDomain, UUID.randomUUID().toString()));
 		if (activityBoundary.getCreatedTimestamp() == null

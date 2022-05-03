@@ -1,4 +1,4 @@
-package iob.restAPI;
+package iob.restAPI.user;
 
 public class NewUserBoundary {
 

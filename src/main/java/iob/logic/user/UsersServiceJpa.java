@@ -1,4 +1,4 @@
-package iob.logic;
+package iob.logic.user;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,16 +10,17 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import iob.data.UserEntity;
-import iob.data.UserRole;
+import iob.data.activity.ActivityCrud;
+import iob.data.instance.InstanceCrud;
+import iob.data.user.UserCrud;
+import iob.data.user.UserEntity;
+import iob.data.user.UserRole;
+import iob.logic.ServiceJpa;
 import iob.logic.exceptions.BadRequestException;
 import iob.logic.exceptions.DeprecatedMethodException;
 import iob.logic.exceptions.ObjNotFoundException;
-import iob.restAPI.UserBoundary;
+import iob.restAPI.user.UserBoundary;
 import iob.utility.user.UserConverter;
-import iob.data.ActivityCrud;
-import iob.data.InstanceCrud;
-import iob.data.UserCrud;
 
 @Service
 public class UsersServiceJpa extends ServiceJpa implements ExtendedUsersService {
