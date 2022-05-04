@@ -83,7 +83,7 @@ public class UsersServiceJpa extends ServiceJpa implements ExtendedUsersService 
 			throw new BadRequestException();
 
 		List<UserBoundary> allUserBoundaries = this.userCrud
-				.findAll(PageRequest.of(page, size, Direction.ASC, "userName")).stream()
+				.findAll(PageRequest.of(page, size, Direction.ASC, "userId")).stream()
 				.map(this.userConverter::toBoundary).collect(Collectors.toList());
 
 		return allUserBoundaries;

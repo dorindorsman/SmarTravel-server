@@ -39,7 +39,7 @@ public class ActivitiesServiceJpa extends ServiceJpa implements ExtendedActiviti
 	@Transactional(readOnly = false)
 	public Object invokeActivity(ActivityBoundary activityBoundary) {
 		
-		// player only - active only
+		// TODO player only - active only
 
 		activityBoundary.setActicityId(new DomainWithId(configurableDomain, UUID.randomUUID().toString()));
 		if (activityBoundary.getCreatedTimestamp() == null

@@ -48,6 +48,8 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 		if (!checkUserIdInDB(instanceBoundary.getCreatedBy().getUserId()))
 			throw new BadRequestException();
+		
+		// TODO only manager can do this task
 
 		InstanceEntity instanceEntity = instanceConvertor.toEntity(instanceBoundary);
 		instanceCrud.save(instanceEntity);
