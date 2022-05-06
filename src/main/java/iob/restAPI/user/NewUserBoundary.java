@@ -4,14 +4,14 @@ public class NewUserBoundary {
 
 	private String email;
 	private String role;
-	private String username;
+	private String userName;
 	private String avatar;
 	
-	public NewUserBoundary(String email, String role, String username, String avatar) {
+	public NewUserBoundary(String email, String role, String userName, String avatar) {
 		super();
 		this.email = email;
 		this.role = role;
-		this.username = username;
+		this.userName = userName;
 		this.avatar = avatar;
 	}
 	
@@ -36,11 +36,11 @@ public class NewUserBoundary {
 	}
 
 	public String getUsername() {
-		return username;
+		return userName;
 	}
 
 	public void setUsername(String username) {
-		this.username = username;
+		this.userName = username;
 	}
 
 	public String getAvatar() {
@@ -53,7 +53,7 @@ public class NewUserBoundary {
 
 	@Override
 	public String toString() {
-		return "NewUserBoundary [email=" + email + ", role=" + role + ", username=" + username + ", avatar=" + avatar
+		return "NewUserBoundary [email=" + email + ", role=" + role + ", username=" + userName + ", avatar=" + avatar
 				+ "]";
 	}
 	

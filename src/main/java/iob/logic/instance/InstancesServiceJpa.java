@@ -129,7 +129,7 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 		if (userRole == UserRole.MANAGER)
 			return this.instanceCrud
-					.findAll(PageRequest.of(page, size, Direction.ASC, "createdTimestamp", "instanceId")).stream()
+					.findAll(PageRequest.of(page, size, Direction.ASC, "instanceId")).stream()
 					.map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 		;
 
@@ -208,7 +208,7 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<InstanceBoundary> searchInstanceByName(Double lat, Double lng, Double distance, String userDomain,
+	public List<InstanceBoundary> searchInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
 			String userEmail, int size, int page) {
 		// TODO Auto-generated method stub
 		return null;

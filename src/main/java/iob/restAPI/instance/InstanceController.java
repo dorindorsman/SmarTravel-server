@@ -44,7 +44,6 @@ public class InstanceController {
 
 	@RequestMapping(method = RequestMethod.POST, path = "/iob/instances", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public InstanceBoundary createInstance(@RequestBody InstanceBoundary boundary) {
-
 		return this.instanceServices.createInstance(boundary);
 	}
 

@@ -21,6 +21,6 @@ public interface ExtendedInstancesService extends InstancesService {
 	public List<InstanceBoundary> searchInstanceByType(String type, String userDomain, String userEmail, int size,
 			int page);
 
-	public List<InstanceBoundary> searchInstanceByName(Double lat, Double lng, Double distance, String userDomain,
+	public List<InstanceBoundary> searchInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
 			String userEmail, int size, int page);
 }
