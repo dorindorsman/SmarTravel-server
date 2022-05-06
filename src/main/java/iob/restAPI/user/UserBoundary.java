@@ -6,7 +6,7 @@ public class UserBoundary {
 
 	private DomainWithEmail userId;
 	private String role;
-	private String userName;
+	private String username;
 	private String avatar;
 
 	public UserBoundary() {
@@ -33,11 +33,11 @@ public class UserBoundary {
 	}
 
 	public String getUsername() {
-		return userName;
+		return username;
 	}
 
 	public void setUsername(String userName) {
-		this.userName = userName;
+		this.username = userName;
 	}
 
 	public String getAvatar() {
