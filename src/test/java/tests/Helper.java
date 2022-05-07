@@ -25,6 +25,15 @@ public abstract class Helper {
 		newUserBoundary.setUsername("userName");
 		return newUserBoundary;
 	}
+	
+	public static NewUserBoundary getNewUserBoundaryWithNumber(String role, int num) {
+		NewUserBoundary newUserBoundary = new NewUserBoundary();
+		newUserBoundary.setEmail(role + "User" + num + "@gmail.com");
+		newUserBoundary.setAvatar("avatar");
+		newUserBoundary.setRole(role);
+		newUserBoundary.setUsername("userName" + num);
+		return newUserBoundary;
+	}
 
 	public static InstanceBoundary getInstanceBoundary(String type, String name, String domain, String email) {
 		InstanceBoundary instanceBoundary = new InstanceBoundary();
