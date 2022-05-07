@@ -15,12 +15,12 @@ public class InstancesTests extends Base {
 	@DisplayName("TEST: POST Instance - with a valid user, returns the Instance boundry with id and timestemps")
 	public void testPostInstanceWithValidUser() throws Exception {
 
-		UserBoundary userBoundaryAdmin = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
-				Helper.getNewUserBoundary("ADMIN"), UserBoundary.class);
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
 
 		InstanceBoundary rv = this.restTemplate.postForObject(
 				this.baseUrl + "/iob/instances", Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryAdmin.getUserId().getDomain(), userBoundaryAdmin.getUserId().getEmail()),
+						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
 				InstanceBoundary.class);
 
 		assertThat(rv).isNotNull();
@@ -128,11 +128,13 @@ public class InstancesTests extends Base {
 		UserBoundary userBoundaryPlayer = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
 				Helper.getNewUserBoundary("PLAYER"), UserBoundary.class);
 
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
 		int count = 0;
 
 		for (int i = 0; i < 10; i++) {
 			InstanceBoundary instanceBoundary = Helper.getInstanceBoundary("testType", "testName",
-					userBoundaryPlayer.getUserId().getDomain(), userBoundaryPlayer.getUserId().getEmail());
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
 			if (instanceBoundary.getActive())
 				count++;
 			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary, InstanceBoundary.class);
@@ -172,5 +174,146 @@ public class InstancesTests extends Base {
 				userBoundaryManager.getUserId().getEmail(), 10, 0);
 		
 		assertThat(actual).isNotNull().hasSize(0);
+	}
+	
+	@Test
+	@DisplayName("TEST: GET all Instances by name - with a valid user that has player role, acive instances only")
+	public void testGetAllInstanceByNameWithValidUserPlayer() throws Exception {
+
+		UserBoundary userBoundaryPlayer = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("PLAYER"), UserBoundary.class);
+		
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
+
+		int count = 0;
+
+		for (int i = 0; i < 10; i++) {
+			InstanceBoundary instanceBoundary = Helper.getInstanceBoundary("testType", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			if (instanceBoundary.getActive())
+				count++;
+			InstanceBoundary instanceBoundary2 = Helper.getInstanceBoundary("testType", "abcd",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary, InstanceBoundary.class);
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary2, InstanceBoundary.class);
+		}
+
+		InstanceBoundary[] actual = this.restTemplate.getForObject(
+				baseUrl + "/iob/instances/search/byName/{name}?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}",
+				InstanceBoundary[].class, "name", userBoundaryPlayer.getUserId().getDomain(),
+				userBoundaryPlayer.getUserId().getEmail(), 20, 0);
+		System.err.println(actual);
+		assertThat(actual).isNotNull().hasSize(count);
+	}
+	
+	@Test
+	@DisplayName("TEST: GET all Instances by name - with a valid user that has manager role")
+	public void testGetAllInstanceByNameWithValidUserManager() throws Exception {
+		
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
+
+		int count = 0;
+
+		for (int i = 0; i < 10; i++) {
+			InstanceBoundary instanceBoundary = Helper.getInstanceBoundary("testType", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			count++;
+			InstanceBoundary instanceBoundary2 = Helper.getInstanceBoundary("testType", "abcd",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary, InstanceBoundary.class);
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary2, InstanceBoundary.class);
+		}
+
+		InstanceBoundary[] actual = this.restTemplate.getForObject(
+				baseUrl + "/iob/instances/search/byName/{name}?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}",
+				InstanceBoundary[].class, "name", userBoundaryManager.getUserId().getDomain(),
+				userBoundaryManager.getUserId().getEmail(), 20, 0);
+		System.err.println(actual);
+		assertThat(actual).isNotNull().hasSize(count);
+	}
+	
+	@Test
+	@DisplayName("TEST: GET all Instances by type - with a valid user that has player role, acive instances only")
+	public void testGetAllInstanceByTypeWithValidUserPlayer() throws Exception {
+
+		UserBoundary userBoundaryPlayer = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("PLAYER"), UserBoundary.class);
+		
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
+
+		int count = 0;
+
+		for (int i = 0; i < 10; i++) {
+			InstanceBoundary instanceBoundary = Helper.getInstanceBoundary("type1", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			if (instanceBoundary.getActive())
+				count++;
+			InstanceBoundary instanceBoundary2 = Helper.getInstanceBoundary("type2", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary, InstanceBoundary.class);
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary2, InstanceBoundary.class);
+		}
+
+		InstanceBoundary[] actual = this.restTemplate.getForObject(
+				baseUrl + "/iob/instances/search/byType/{type}?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}",
+				InstanceBoundary[].class, "type1", userBoundaryPlayer.getUserId().getDomain(),
+				userBoundaryPlayer.getUserId().getEmail(), 20, 0);
+		System.err.println(actual);
+		assertThat(actual).isNotNull().hasSize(count);
+	}
+	
+	@Test
+	@DisplayName("TEST: GET all Instances by type - with a valid user that has manager role")
+	public void testGetAllInstanceByTypeWithValidUserManager() throws Exception {
+		
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
+
+		int count = 0;
+
+		for (int i = 0; i < 10; i++) {
+			InstanceBoundary instanceBoundary = Helper.getInstanceBoundary("type1", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			count++;
+			InstanceBoundary instanceBoundary2 = Helper.getInstanceBoundary("type2", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary, InstanceBoundary.class);
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary2, InstanceBoundary.class);
+		}
+
+		InstanceBoundary[] actual = this.restTemplate.getForObject(
+				baseUrl + "/iob/instances/search/byType/{type}?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}",
+				InstanceBoundary[].class, "type1", userBoundaryManager.getUserId().getDomain(),
+				userBoundaryManager.getUserId().getEmail(), 20, 0);
+		System.err.println(actual);
+		assertThat(actual).isNotNull().hasSize(count);
+	}
+	
+	@Test
+	@DisplayName("TEST: GET all Instances by location - with a valid user that has manager role")
+	public void testGetAllInstanceByLocationWithValidUserManager() throws Exception {
+		
+		UserBoundary userBoundaryManager = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
+
+		int count = 0;
+
+		for (int i = 0; i < 100; i++) {
+			InstanceBoundary instanceBoundary = Helper.getInstanceBoundary("type1", "name",
+					userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+			
+			count++;
+			this.restTemplate.postForObject(this.baseUrl + "/iob/instances", instanceBoundary, InstanceBoundary.class);
+		}
+
+		InstanceBoundary[] actual = this.restTemplate.getForObject(
+				baseUrl + "/iob/instances/search/near/{lat}/{lng}/{distance}?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}",
+				InstanceBoundary[].class, 15, 15, Math.sqrt(50), userBoundaryManager.getUserId().getDomain(),
+				userBoundaryManager.getUserId().getEmail(), 100, 0);
+		System.err.println(actual);
+		assertThat(actual).isNotNull().hasSize(count);
 	}
 }

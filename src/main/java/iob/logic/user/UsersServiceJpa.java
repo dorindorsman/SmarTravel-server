@@ -75,7 +75,7 @@ public class UsersServiceJpa extends ServiceJpa implements ExtendedUsersService 
 	@Override
 	@Transactional(readOnly = true)
 	public List<UserBoundary> getAllUsers(String userDomain, String userEmail, int size, int page) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 
@@ -97,7 +97,7 @@ public class UsersServiceJpa extends ServiceJpa implements ExtendedUsersService 
 	@Override
 	@Transactional(readOnly = false)
 	public void deleteAllUsers(String userDomain, String userEmail) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 		if (userRole == UserRole.ADMIN) {

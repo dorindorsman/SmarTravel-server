@@ -15,12 +15,12 @@ public interface ExtendedInstancesService extends InstancesService {
 
 	public void deleteAllInstances(String userDomain, String userEmail);
 
-	public List<InstanceBoundary> searchInstanceByName(String name, String userDomain, String userEmail, int size,
+	public List<InstanceBoundary> getAllInstanceByName(String name, String userDomain, String userEmail, int size,
 			int page);
 
-	public List<InstanceBoundary> searchInstanceByType(String type, String userDomain, String userEmail, int size,
+	public List<InstanceBoundary> getAllInstanceByType(String type, String userDomain, String userEmail, int size,
 			int page);
 
-	public List<InstanceBoundary> searchInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
+	public List<InstanceBoundary> getAllInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
 			String userEmail, int size, int page);
 }

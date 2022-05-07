@@ -41,8 +41,8 @@ public class UsersTests extends Base {
 
 	@Test
 	public void testDeleteAllUsersFromServer() throws Exception {
-		UserBoundary userBoundaryAdmin = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
-				Helper.getNewUserBoundary("ADMIN"), UserBoundary.class);
+		String getUrl = this.baseUrl + "/iob/admin/users?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}";
+		String deleteUrl =this.baseUrl + "/iob/admin/users?userDomain={userDomain}&userEmail={userEmail}";
 		
 		this.restTemplate.postForObject(this.baseUrl + "/iob/users",
 				Helper.getNewUserBoundary("MANAGER"), UserBoundary.class);
@@ -50,9 +50,22 @@ public class UsersTests extends Base {
 		this.restTemplate.postForObject(this.baseUrl + "/iob/users",
 				Helper.getNewUserBoundary("PLAYER"), UserBoundary.class);
 		
-		this.restTemplate.delete(this.baseUrl + "/iob/admin/users?userDomain={userDomain}&userEmail={userEmail}",
+		UserBoundary userBoundaryAdmin = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("ADMIN"), UserBoundary.class);
+		
+		this.restTemplate.delete(deleteUrl,
 				userBoundaryAdmin.getUserId().getDomain(),
 				userBoundaryAdmin.getUserId().getEmail());
+		
+		userBoundaryAdmin = this.restTemplate.postForObject(this.baseUrl + "/iob/users",
+				Helper.getNewUserBoundary("ADMIN"), UserBoundary.class);
+		
+		UserBoundary [] allUsers = this.restTemplate.getForObject(
+				getUrl,
+				UserBoundary[].class, userBoundaryAdmin.getUserId().getDomain(),
+				userBoundaryAdmin.getUserId().getEmail(), 10, 0);
+		
+		assertThat(allUsers).isNotNull().hasSize(1);
 
 	}
 	

@@ -20,6 +20,7 @@ import iob.logic.ServiceJpa;
 import iob.logic.exceptions.BadRequestException;
 import iob.logic.exceptions.DeprecatedMethodException;
 import iob.restAPI.activity.ActivityBoundary;
+import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
 import iob.utility.activity.ActivityConvertor;
 
@@ -38,9 +39,6 @@ public class ActivitiesServiceJpa extends ServiceJpa implements ExtendedActiviti
 	@Override
 	@Transactional(readOnly = false)
 	public Object invokeActivity(ActivityBoundary activityBoundary) {
-		
-		// TODO player only - active only
-
 		activityBoundary.setActicityId(new DomainWithId(configurableDomain, UUID.randomUUID().toString()));
 		if (activityBoundary.getCreatedTimestamp() == null
 				|| activityBoundary.getCreatedTimestamp().toString().isEmpty())
@@ -49,13 +47,17 @@ public class ActivitiesServiceJpa extends ServiceJpa implements ExtendedActiviti
 		if (!checkUserIdInDB(activityBoundary.getInvokedBy().getUserId()))
 			throw new BadRequestException();
 		
-		if (!checkInstanceIdInDB(activityBoundary.getInstance().getInstanceId()))
+		if (!getInstanceActiveInDB(activityBoundary.getInstance().getInstanceId()))
+			throw new BadRequestException();
+		
+		DomainWithEmail de = activityBoundary.getInvokedBy().getUserId();
+		if (getUserRoleInDB(de.getDomain(),de.getEmail()) != UserRole.PLAYER)
 			throw new BadRequestException();
 
 		ActivityEntity activityEntity = activityConvertor.toEntity(activityBoundary);
 		activityCrud.save(activityEntity);
 
-		return activityConvertor.toBoundary(activityEntity); // temp - json
+		return activityConvertor.toBoundary(activityEntity);
 	}
 
 	@Override
@@ -67,7 +69,7 @@ public class ActivitiesServiceJpa extends ServiceJpa implements ExtendedActiviti
 	@Override
 	@Transactional(readOnly = true)
 	public List<ActivityBoundary> getAllActivities(String userDomain, String userEmail, int size, int page) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 		
@@ -91,7 +93,7 @@ public class ActivitiesServiceJpa extends ServiceJpa implements ExtendedActiviti
 	@Override
 	@Transactional(readOnly = false)
 	public void deleteAllActivities(String userDomain, String userEmail) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 		if (userRole == UserRole.ADMIN) {

@@ -1,5 +1,6 @@
 package iob.logic.instance;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ import iob.logic.exceptions.BadRequestException;
 import iob.logic.exceptions.DeprecatedMethodException;
 import iob.logic.exceptions.ObjNotFoundException;
 import iob.restAPI.instance.InstanceBoundary;
+import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
 import iob.utility.instance.InstanceConvertor;
 
@@ -48,8 +50,10 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 		if (!checkUserIdInDB(instanceBoundary.getCreatedBy().getUserId()))
 			throw new BadRequestException();
-		
-		// TODO only manager can do this task
+
+		DomainWithEmail de = instanceBoundary.getCreatedBy().getUserId();
+		if (getUserRoleInDB(de.getDomain(), de.getEmail()) != UserRole.MANAGER)
+			throw new BadRequestException();
 
 		InstanceEntity instanceEntity = instanceConvertor.toEntity(instanceBoundary);
 		instanceCrud.save(instanceEntity);
@@ -65,7 +69,7 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 	@Transactional(readOnly = false)
 	public InstanceBoundary updateInstance(String instanceDomain, String instanceId, InstanceBoundary update,
 			String userDomain, String userEmail) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 
@@ -96,7 +100,7 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 	@Override
 	public InstanceBoundary getSpecificInstance(String instanceDomain, String instanceId, String userDomain,
 			String userEmail) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 
@@ -123,19 +127,18 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 	@Override
 	@Transactional(readOnly = true)
 	public List<InstanceBoundary> getAllInstances(String userDomain, String userEmail, int size, int page) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 
 		if (userRole == UserRole.MANAGER)
-			return this.instanceCrud
-					.findAll(PageRequest.of(page, size, Direction.ASC, "instanceId")).stream()
+			return this.instanceCrud.findAll(PageRequest.of(page, size, Direction.ASC, "instanceId")).stream()
 					.map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 		;
 
 		if (userRole == UserRole.PLAYER) {
 			return this.instanceCrud
-					.findAllByActive(true, PageRequest.of(page, size, Direction.ASC, "createdTimestamp", "instanceId"))
+					.findAllByActive(true, PageRequest.of(page, size, Direction.ASC, "instanceId"))
 					.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 
 		}
@@ -152,7 +155,7 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 	@Override
 	@Transactional(readOnly = false)
 	public void deleteAllInstances(String userDomain, String userEmail) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 		if (userRole == UserRole.ADMIN) {
@@ -164,21 +167,21 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<InstanceBoundary> searchInstanceByName(String name, String userDomain, String userEmail, int size,
+	public List<InstanceBoundary> getAllInstanceByName(String name, String userDomain, String userEmail, int size,
 			int page) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 
 		if (userRole == UserRole.MANAGER)
 			return this.instanceCrud
-					.findAllByName(name, PageRequest.of(page, size, Direction.ASC, "createdTimestamp", "instanceId"))
+					.findAllByName(name, PageRequest.of(page, size, Direction.ASC, "instanceId"))
 					.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 
 		if (userRole == UserRole.PLAYER) {
 			return this.instanceCrud
 					.findAllByNameAndActive(name, true,
-							PageRequest.of(page, size, Direction.ASC, "createdTimestamp", "instanceId"))
+							PageRequest.of(page, size, Direction.ASC, "instanceId"))
 					.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 		}
 		throw new BadRequestException();
@@ -186,21 +189,21 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<InstanceBoundary> searchInstanceByType(String type, String userDomain, String userEmail, int size,
+	public List<InstanceBoundary> getAllInstanceByType(String type, String userDomain, String userEmail, int size,
 			int page) {
-		UserRole userRole = checkUserRoleInDB(userDomain, userEmail);
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
 		if (userRole == null)
 			throw new BadRequestException();
 
 		if (userRole == UserRole.MANAGER)
 			return this.instanceCrud
-					.findAllByType(type, PageRequest.of(page, size, Direction.ASC, "createdTimestamp", "instanceId"))
+					.findAllByType(type, PageRequest.of(page, size, Direction.ASC, "instanceId"))
 					.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 
 		if (userRole == UserRole.PLAYER) {
 			return this.instanceCrud
 					.findAllByTypeAndActive(type, true,
-							PageRequest.of(page, size, Direction.ASC, "createdTimestamp", "instanceId"))
+							PageRequest.of(page, size, Direction.ASC, "instanceId"))
 					.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 		}
 		throw new BadRequestException();
@@ -208,10 +211,47 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<InstanceBoundary> searchInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
+	public List<InstanceBoundary> getAllInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
 			String userEmail, int size, int page) {
-		// TODO Auto-generated method stub
-		return null;
+
+		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
+		if (userRole == null)
+			throw new BadRequestException();
+
+		List<InstanceBoundary> res = new ArrayList<InstanceBoundary>();
+		List<InstanceBoundary> list = new ArrayList<InstanceBoundary>();
+		while (res.size() < size) {
+			if (userRole == UserRole.MANAGER)
+				list = this.instanceCrud
+						.findAll(PageRequest.of(page, size, Direction.ASC, "instanceId")).stream()
+						.map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
+			else if (userRole == UserRole.PLAYER)
+				list = this.instanceCrud
+						.findAllByActive(true,
+								PageRequest.of(page, size, Direction.ASC, "instanceId"))
+						.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
+			for (int i = 0; i < list.size(); i++) {
+				InstanceBoundary instanceBoundary = list.get(i);
+				if (calculateDistance(instanceBoundary, lat, lng, distance)) {
+					res.add(instanceBoundary);
+					if (res.size() == size)
+						return res;
+				}
+			}
+			if (size == list.size())
+				page++;
+			else
+				return res;
+		}
+
+		throw new BadRequestException();
+	}
+
+	private boolean calculateDistance(InstanceBoundary instanceBoundary, Double lat, Double lng, Double distance) {
+		double lat1 = instanceBoundary.getLocation().getLat();
+		double lng1 = instanceBoundary.getLocation().getLng();
+		double dis = Math.sqrt(Math.pow(lat - lat1, 2) + Math.pow(lng - lng1, 2));
+		return dis <= distance;
 	}
 
 	@Transactional(readOnly = true)

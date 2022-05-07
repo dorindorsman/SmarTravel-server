@@ -65,4 +65,42 @@ public class InstanceController {
 
 		this.instanceServices.deleteAllInstances(userDomain, userEmail);
 	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/iob/instances/search/byName/{name}",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public InstanceBoundary[] getAllInstancesByName(
+			@PathVariable("name") String name,
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		return this.instanceServices.getAllInstanceByName(name, userDomain, userEmail, size, page)
+				.toArray(new InstanceBoundary[0]);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/iob/instances/search/byType/{type}",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public InstanceBoundary[] getAllInstancesByType(
+			@PathVariable("type") String type,
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		return this.instanceServices.getAllInstanceByType(type, userDomain, userEmail, size, page)
+				.toArray(new InstanceBoundary[0]);
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, path = "/iob/instances/search/near/{lat}/{lng}/{distance}",
+			produces = MediaType.APPLICATION_JSON_VALUE)
+	public InstanceBoundary[] getAllInstancesByLocation(
+			@PathVariable("lat") Double lat,
+			@PathVariable("lng") Double lng,
+			@PathVariable("distance") Double distance,
+			@RequestParam(name = "userDomain", required = true) String userDomain,
+			@RequestParam(name = "userEmail", required = true) String userEmail,
+			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
+			@RequestParam(name = "page", required = false, defaultValue = "0") int page) {
+		return this.instanceServices.getAllInstanceByLocation(lat, lng, distance, userDomain, userEmail, size, page)
+				.toArray(new InstanceBoundary[0]);
+	}
 }

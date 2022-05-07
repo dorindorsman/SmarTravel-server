@@ -34,7 +34,7 @@ public abstract class ServiceJpa {
 	}
 	
 	@Transactional(readOnly = true)
-	protected UserRole checkUserRoleInDB(String domain, String email) {
+	protected UserRole getUserRoleInDB(String domain, String email) {
 		String id = domain + "_" + email;
 
 		Optional<UserEntity> op = userCrud.findById(id);
@@ -59,6 +59,16 @@ public abstract class ServiceJpa {
 		
 		Optional<InstanceEntity> op = instanceCrud.findById(id);
 		if (op.isPresent())
+			return true;
+		return false;
+	}
+	
+	@Transactional(readOnly = true)
+	protected boolean getInstanceActiveInDB(DomainWithId domainWithId) {
+		String id = domainWithId.getDomain() + "_" + domainWithId.getId() ;
+		
+		Optional<InstanceEntity> op = instanceCrud.findById(id);
+		if (op.isPresent() && op.get().getActive())
 			return true;
 		return false;
 	}
