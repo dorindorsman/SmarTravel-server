@@ -38,10 +38,11 @@ public class ActivityTests extends Base{
 		
 		DomainWithEmail de = new DomainWithEmail(userBoundary.getUserId().getDomain(), userBoundary.getUserId().getEmail());
 
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);	
 		
 		ActivityBoundary activityBoundary = new ActivityBoundary();
 		activityBoundary.setInvokedBy(new InvokedBy(de));
@@ -69,10 +70,11 @@ public class ActivityTests extends Base{
 		
 		DomainWithEmail de = new DomainWithEmail(userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
 
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);	
 		
 		ActivityBoundary activityBoundary = new ActivityBoundary();
 		activityBoundary.setInvokedBy(new InvokedBy(de));
@@ -110,10 +112,12 @@ public class ActivityTests extends Base{
 		DomainWithEmail de = new DomainWithEmail(userBoundary.getUserId().getDomain(), userBoundary.getUserId().getEmail());
 		InvokedBy inv = new InvokedBy(de);
 
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);
+		
 		for(int i = 0; i < 15; i++ )
 		{
 			ActivityBoundary activityBoundary = new ActivityBoundary();
@@ -150,10 +154,12 @@ public class ActivityTests extends Base{
 		DomainWithEmail de = new DomainWithEmail(userBoundary.getUserId().getDomain(), userBoundary.getUserId().getEmail());
 		InvokedBy inv = new InvokedBy(de);
 
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);	
+		
 		for(int i = 0; i < 15; i++ )
 		{
 			ActivityBoundary activityBoundary = new ActivityBoundary();
@@ -197,12 +203,14 @@ public class ActivityTests extends Base{
 		DomainWithEmail de = new DomainWithEmail(userBoundary.getUserId().getDomain(), userBoundary.getUserId().getEmail());
 		InvokedBy inv = new InvokedBy(de);
 
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);	
 		
 		ArrayList<ActivityBoundary> lastFive = new ArrayList<ActivityBoundary>();
+		
 		for(int i = 0; i < 15; i++ )
 		{
 			ActivityBoundary activityBoundary = new ActivityBoundary();
@@ -249,10 +257,11 @@ public class ActivityTests extends Base{
 			
 		DomainWithEmail de = new DomainWithEmail(userBoundary.getUserId().getDomain(), userBoundary.getUserId().getEmail());
 	
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);	
 		
 		ActivityBoundary activityBoundary = new ActivityBoundary();
 		activityBoundary.setInvokedBy(new InvokedBy(de));
@@ -291,10 +300,11 @@ public class ActivityTests extends Base{
 			
 		DomainWithEmail de = new DomainWithEmail(userBoundary.getUserId().getDomain(), userBoundary.getUserId().getEmail());
 	
-		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(
-				postInstanceBoundary, Helper.getInstanceBoundary("testType", "testName",
-						userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail()),
-				InstanceBoundary.class);	
+		InstanceBoundary instance = Helper.getInstanceBoundary("testType", "testName",
+				userBoundaryManager.getUserId().getDomain(), userBoundaryManager.getUserId().getEmail());
+		instance.setActive(true);
+		
+		InstanceBoundary instanceBoundary = this.restTemplate.postForObject(postInstanceBoundary, instance, InstanceBoundary.class);	
 		
 		ActivityBoundary activityBoundary = new ActivityBoundary();
 		activityBoundary.setInvokedBy(new InvokedBy(de));
