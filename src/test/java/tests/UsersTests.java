@@ -8,6 +8,7 @@ import iob.restAPI.user.NewUserBoundary;
 public class UsersTests extends Base {
 
 	@Test
+	@DisplayName("TEST: add user to the database")
 	public void testPostUserOnServer() throws Exception {
 		String postUrl = this.baseUrl + "/iob/users";
 		String getUrl = this.baseUrl + "/iob/users/login/{userDomain}/{userEmail}";
@@ -21,6 +22,7 @@ public class UsersTests extends Base {
 	}
 
 	@Test
+	@DisplayName("TEST: Update user")
 	public void testUpdateUserOnServer() throws Exception {
 		String postUrl = this.baseUrl + "/iob/users";
 		String updateUrl = this.baseUrl + "/iob/users/{userDomain}/{userEmail}";
@@ -40,6 +42,7 @@ public class UsersTests extends Base {
 	}
 
 	@Test
+	@DisplayName("TEST: Delete all users")
 	public void testDeleteAllUsersFromServer() throws Exception {
 		String getUrl = this.baseUrl + "/iob/admin/users?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}";
 		String deleteUrl =this.baseUrl + "/iob/admin/users?userDomain={userDomain}&userEmail={userEmail}";
