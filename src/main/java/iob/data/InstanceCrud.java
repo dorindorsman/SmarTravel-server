@@ -29,4 +29,19 @@ public interface InstanceCrud extends PagingAndSortingRepository<InstanceEntity,
 			@Param("type") String type,
 			@Param("isActive") boolean isActive,
 			Pageable pageable);
+	
+	public List<InstanceEntity> findAllByLocationLatBetweenAndLocationLngBetween(
+			@Param("minLocationLat") Double minLocationLat, 
+			@Param("maxLocationLat") Double maxLocationLat, 
+			@Param("minLocationLng") Double minLocationLng, 
+			@Param("maxLocationLng") Double maxLocationLng,
+            Pageable pageable);
+	
+	public List<InstanceEntity> findAllByLocationLatBetweenAndLocationLngBetweenAndActive(
+			@Param("minLocationLat") Double minLocationLat, 
+			@Param("maxLocationLat") Double maxLocationLat, 
+			@Param("minLocationLng") Double minLocationLng, 
+			@Param("maxLocationLng") Double maxLocationLng,
+			@Param("isActive") boolean isActive,
+            Pageable pageable);
 }

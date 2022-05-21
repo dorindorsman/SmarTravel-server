@@ -311,7 +311,7 @@ public class InstancesTests extends Base {
 
 		InstanceBoundary[] actual = this.restTemplate.getForObject(
 				baseUrl + "/iob/instances/search/near/{lat}/{lng}/{distance}?userDomain={userDomain}&userEmail={userEmail}&size={size}&page={page}",
-				InstanceBoundary[].class, 15, 15, Math.sqrt(50), userBoundaryManager.getUserId().getDomain(),
+				InstanceBoundary[].class, 15, 15, 5, userBoundaryManager.getUserId().getDomain(),
 				userBoundaryManager.getUserId().getEmail(), 100, 0);
 		System.err.println(actual);
 		assertThat(actual).isNotNull().hasSize(count);

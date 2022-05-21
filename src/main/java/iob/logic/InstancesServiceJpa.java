@@ -97,6 +97,7 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public InstanceBoundary getSpecificInstance(String instanceDomain, String instanceId, String userDomain,
 			String userEmail) {
 		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
@@ -145,7 +146,6 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 	}
 
 	@Override
-	@Transactional(readOnly = false)
 	public void deleteAllInstances() {
 		throw new DeprecatedMethodException(
 				"deprecated method - use deleteAllInstances with user domin and user email");
@@ -208,6 +208,44 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 		throw new BadRequestException();
 	}
 
+//	@Override
+//	@Transactional(readOnly = true)
+//	public List<InstanceBoundary> getAllInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
+//			String userEmail, int size, int page) {
+//
+//		UserRole userRole = getUserRoleInDB(userDomain, userEmail);
+//		if (userRole == null)
+//			throw new BadRequestException();
+//
+//		List<InstanceBoundary> res = new ArrayList<InstanceBoundary>();
+//		List<InstanceBoundary> list = new ArrayList<InstanceBoundary>();
+//		while (res.size() < size) {
+//			if (userRole == UserRole.MANAGER)
+//				list = this.instanceCrud
+//						.findAll(PageRequest.of(page, size, Direction.ASC, "instanceId")).stream()
+//						.map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
+//			else if (userRole == UserRole.PLAYER)
+//				list = this.instanceCrud
+//						.findAllByActive(true,
+//								PageRequest.of(page, size, Direction.ASC, "instanceId"))
+//						.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
+//			for (int i = 0; i < list.size(); i++) {
+//				InstanceBoundary instanceBoundary = list.get(i);
+//				if (calculateDistance(instanceBoundary, lat, lng, distance)) {
+//					res.add(instanceBoundary);
+//					if (res.size() == size)
+//						return res;
+//				}
+//			}
+//			if (size == list.size())
+//				page++;
+//			else
+//				return res;
+//		}
+//
+//		throw new BadRequestException();
+//	}
+	
 	@Override
 	@Transactional(readOnly = true)
 	public List<InstanceBoundary> getAllInstanceByLocation(Double lat, Double lng, Double distance, String userDomain,
@@ -217,31 +255,14 @@ public class InstancesServiceJpa extends ServiceJpa implements ExtendedInstances
 		if (userRole == null)
 			throw new BadRequestException();
 
-		List<InstanceBoundary> res = new ArrayList<InstanceBoundary>();
-		List<InstanceBoundary> list = new ArrayList<InstanceBoundary>();
-		while (res.size() < size) {
 			if (userRole == UserRole.MANAGER)
-				list = this.instanceCrud
-						.findAll(PageRequest.of(page, size, Direction.ASC, "instanceId")).stream()
-						.map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
+				return this.instanceCrud.findAllByLocationLatBetweenAndLocationLngBetween(lat-distance, lat+distance, lng-distance, lng+distance,
+						PageRequest.of(page, size, Direction.ASC, "instanceId"))
+				.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 			else if (userRole == UserRole.PLAYER)
-				list = this.instanceCrud
-						.findAllByActive(true,
-								PageRequest.of(page, size, Direction.ASC, "instanceId"))
-						.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
-			for (int i = 0; i < list.size(); i++) {
-				InstanceBoundary instanceBoundary = list.get(i);
-				if (calculateDistance(instanceBoundary, lat, lng, distance)) {
-					res.add(instanceBoundary);
-					if (res.size() == size)
-						return res;
-				}
-			}
-			if (size == list.size())
-				page++;
-			else
-				return res;
-		}
+				return this.instanceCrud.findAllByLocationLatBetweenAndLocationLngBetweenAndActive(lat-distance, lat+distance, lng-distance, lng+distance, true
+						,PageRequest.of(page, size, Direction.ASC, "instanceId"))
+				.stream().map(this.instanceConvertor::toBoundary).collect(Collectors.toList());
 
 		throw new BadRequestException();
 	}
