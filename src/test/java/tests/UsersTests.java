@@ -2,8 +2,9 @@ package tests;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import iob.restAPI.user.UserBoundary;
-import iob.restAPI.user.NewUserBoundary;
+
+import iob.restAPI.NewUserBoundary;
+import iob.restAPI.UserBoundary;
 
 public class UsersTests extends Base {
 

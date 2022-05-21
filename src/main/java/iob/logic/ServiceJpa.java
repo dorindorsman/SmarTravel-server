@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
-import iob.data.activity.ActivityCrud;
-import iob.data.instance.InstanceCrud;
-import iob.data.instance.InstanceEntity;
-import iob.data.user.UserCrud;
-import iob.data.user.UserEntity;
-import iob.data.user.UserRole;
+import iob.data.ActivityCrud;
+import iob.data.InstanceCrud;
+import iob.data.InstanceEntity;
+import iob.data.UserCrud;
+import iob.data.UserEntity;
+import iob.data.UserRole;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
 

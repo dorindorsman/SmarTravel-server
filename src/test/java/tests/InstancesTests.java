@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.HttpClientErrorException.BadRequest;
 
-import iob.restAPI.instance.InstanceBoundary;
-import iob.restAPI.user.UserBoundary;
+import iob.restAPI.InstanceBoundary;
+import iob.restAPI.UserBoundary;
 
 public class InstancesTests extends Base {
 

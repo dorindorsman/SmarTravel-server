@@ -10,7 +10,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.web.client.RestTemplate;
 
 import iob.Application;
-import iob.restAPI.user.UserBoundary;
+import iob.restAPI.UserBoundary;
 
 @SpringBootTest(classes = Application.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public abstract class Base {

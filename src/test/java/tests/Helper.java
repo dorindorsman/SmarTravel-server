@@ -8,12 +8,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Value;
 
-import iob.restAPI.instance.InstanceBoundary;
-import iob.restAPI.user.NewUserBoundary;
+import iob.restAPI.InstanceBoundary;
+import iob.restAPI.NewUserBoundary;
+import iob.utility.CreatedBy;
 import iob.utility.DomainWithEmail;
 import iob.utility.DomainWithId;
-import iob.utility.instance.CreatedBy;
-import iob.utility.instance.Location;
+import iob.utility.Location;
 
 public abstract class Helper {
 

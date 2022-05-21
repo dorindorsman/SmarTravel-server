@@ -9,14 +9,13 @@ import java.util.HashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import iob.restAPI.activity.ActivityBoundary;
-import iob.restAPI.instance.InstanceBoundary;
-import iob.restAPI.user.NewUserBoundary;
-import iob.restAPI.user.UserBoundary;
+import iob.restAPI.ActivityBoundary;
+import iob.restAPI.InstanceBoundary;
+import iob.restAPI.NewUserBoundary;
+import iob.restAPI.UserBoundary;
 import iob.utility.DomainWithEmail;
-
-import iob.utility.activity.Instance;
-import iob.utility.activity.InvokedBy;
+import iob.utility.Instance;
+import iob.utility.InvokedBy;
 
 
 public class ActivityTests extends Base{
@@ -230,7 +229,7 @@ public class ActivityTests extends Base{
 
 		Boolean equals = true;
 		for(int i = 0; i < 5; i++ )
-			if(!actual[i].getActicityId().getId().equals(lastFive.get(i).getActicityId().getId()))
+			if(!actual[i].getActivityId().getId().equals(lastFive.get(i).getActivityId().getId()))
 				equals = false;	
 			
 		assertTrue(equals);
